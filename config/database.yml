@@ -25,17 +25,14 @@ test:
 # is mounted as a persistent Docker volume in config/deploy.yml.
 production:
   primary:
-    <<: *default
-    database: storage/production.sqlite3
+    url: <%= ENV.fetch("DATABASE_URL") { "postgresql://localhost/rails_match_apply_production" } %>
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   cache:
-    <<: *default
-    database: storage/production_cache.sqlite3
+    url: <%= ENV.fetch("CACHE_DATABASE_URL") { ENV.fetch("DATABASE_URL") { "postgresql://localhost/rails_match_apply_cache_production" } } %>
     migrations_paths: db/cache_migrate
   queue:
-    <<: *default
-    database: storage/production_queue.sqlite3
+    url: <%= ENV.fetch("QUEUE_DATABASE_URL") { ENV.fetch("DATABASE_URL") { "postgresql://localhost/rails_match_apply_queue_production" } } %>
     migrations_paths: db/queue_migrate
   cable:
-    <<: *default
-    database: storage/production_cable.sqlite3
+    url: <%= ENV.fetch("CABLE_DATABASE_URL") { ENV.fetch("DATABASE_URL") { "postgresql://localhost/rails_match_apply_cable_production" } } %>
     migrations_paths: db/cable_migrate
