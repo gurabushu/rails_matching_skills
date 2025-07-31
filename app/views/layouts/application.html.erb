@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "People Date" %></title>
+    <title><%= content_for(:title) || "スキマッチ" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -16,6 +16,11 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
@@ -23,13 +28,221 @@
   </head>
 
   <body>
+    <!-- Navigation - ログイン後のみ表示 -->
+    <% if user_signed_in? %>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+          <%= link_to "スキマッチ", root_path, class: "navbar-brand" %>
+          
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item">
+                <%= link_to "ユーザー一覧", users_path, class: "nav-link" %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "マッチング", matches_path, class: "nav-link" %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "チャット", chat_rooms_path, class: "nav-link" %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "取引", deals_path, class: "nav-link" %>
+              </li>
+            </ul>
+            
+            <ul class="navbar-nav">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                  <%= current_user.name || current_user.email %>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><%= link_to "プロフィール", current_user, class: "dropdown-item" %></li>
+                  <li><%= link_to "設定", edit_user_registration_path, class: "dropdown-item" %></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><%= button_to "ログアウト", destroy_user_session_path, method: :delete, class: "dropdown-item", form: { style: "display: inline;" } %></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      
+      <!-- 統計情報バー -->
+      <div class="stats-bar bg-light border-bottom">
+        <div class="container">
+          <div class="row py-2">
+            <div class="col-md-2 text-center">
+              <small class="text-muted">登録ユーザー</small>
+              <div class="fw-bold text-primary" id="total-users">-</div>
+            </div>
+            <div class="col-md-2 text-center">
+              <small class="text-muted">マッチ率</small>
+              <div class="fw-bold text-success" id="match-rate">-%</div>
+            </div>
+            <div class="col-md-2 text-center">
+              <small class="text-muted">総マッチ数</small>
+              <div class="fw-bold text-info" id="total-matches">-</div>
+            </div>
+            <div class="col-md-2 text-center">
+              <small class="text-muted">成功率</small>
+              <div class="fw-bold text-warning" id="success-rate">-%</div>
+            </div>
+            <div class="col-md-4 text-end d-flex align-items-center justify-content-end">
+              <%= button_to "📊 統計更新", generate_stats_path, 
+                          method: :post, 
+                          class: "btn btn-sm btn-outline-primary",
+                          title: "統計データを最新に更新",
+                          style: "border: none; background: transparent; font-size: 0.875rem;",
+                          data: { confirm: "統計データを更新しますか？" } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Flash Messages -->
     <% if notice %>
-      <p class="notice"><%= notice %></p>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= notice %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
     <% end %>
     <% if alert %>
-      <p class="alert"><%= alert %></p>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= alert %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
     <% end %>
     
-    <%= yield %>
+    <!-- Main Content -->
+    <div style="margin-bottom: 50px;">
+      <%= yield %>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 統計データ読み込み -->
+    <script>
+      let statsLoaded = false;
+      
+      function loadStatsData() {
+        console.log('統計データ読み込み開始');
+        
+        // キャッシュを回避するためのタイムスタンプを追加
+        const timestamp = new Date().getTime();
+        fetch('/match_stats.json?t=' + timestamp)
+          .then(response => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log('統計データ取得成功:', data);
+            
+            // ヘッダーの統計情報（ログイン時）
+            const totalUsers = document.getElementById('total-users');
+            const matchRate = document.getElementById('match-rate');
+            const totalMatches = document.getElementById('total-matches');
+            const successRate = document.getElementById('success-rate');
+            
+            if (totalUsers) {
+              totalUsers.textContent = data.total_users || 0;
+              console.log('ヘッダー統計更新: total_users =', data.total_users);
+            }
+            if (matchRate) matchRate.textContent = (data.match_rate || 0) + '%';
+            if (totalMatches) totalMatches.textContent = data.total_matches || 0;
+            if (successRate) successRate.textContent = (data.success_rate || 0) + '%';
+            
+            // ランディングページの統計情報（ログアウト時）
+            const totalUsersLanding = document.getElementById('total-users-landing');
+            const matchRateLanding = document.getElementById('match-rate-landing');
+            const totalMatchesLanding = document.getElementById('total-matches-landing');
+            const successRateLanding = document.getElementById('success-rate-landing');
+            
+            if (totalUsersLanding) {
+              totalUsersLanding.textContent = data.total_users || 0;
+              console.log('ランディング統計更新: total_users =', data.total_users);
+            }
+            if (matchRateLanding) matchRateLanding.textContent = (data.match_rate || 0) + '%';
+            if (totalMatchesLanding) totalMatchesLanding.textContent = data.total_matches || 0;
+            if (successRateLanding) successRateLanding.textContent = (data.success_rate || 0) + '%';
+            
+            statsLoaded = true;
+          })
+          .catch(error => {
+            console.error('統計データの読み込みに失敗しました:', error);
+            // フォールバック: デフォルト値を表示
+            const elements = [
+              'total-users', 'match-rate', 'total-matches', 'success-rate',
+              'total-users-landing', 'match-rate-landing', 'total-matches-landing', 'success-rate-landing'
+            ];
+            elements.forEach(id => {
+              const element = document.getElementById(id);
+              if (element && element.textContent === '-') {
+                if (id.includes('rate')) {
+                  element.textContent = '0%';
+                } else {
+                  element.textContent = '0';
+                }
+              }
+            });
+          });
+      }
+      
+      document.addEventListener('DOMContentLoaded', function() {
+        loadStatsData();
+        
+        // フラッシュメッセージで統計データ更新完了を検知したら再読み込み
+        checkForStatsUpdate();
+      });
+      
+      // 統計データ更新のチェック機能
+      function checkForStatsUpdate() {
+        const flashMessages = document.querySelectorAll('.alert');
+        flashMessages.forEach(function(message) {
+          if (message.textContent.includes('統計データを更新しました')) {
+            console.log('統計データ更新メッセージを検知、データを再読み込みします');
+            setTimeout(function() {
+              loadStatsData();
+            }, 500); // 0.5秒後に再読み込み（短縮）
+          }
+        });
+        
+        // URLパラメータからも統計データ更新を検知
+        if (window.location.search.includes('stats_updated=true')) {
+          console.log('URLパラメータから統計データ更新を検知');
+          loadStatsData();
+        }
+      }
+      
+      // ページが表示された時（戻るボタンなど）にも再読み込み
+      window.addEventListener('pageshow', function(event) {
+        if (event.persisted || !statsLoaded) {
+          loadStatsData();
+        }
+      });
+      
+      // デバッグ用：手動でStats更新をテストする関数（コンソールで実行可能）
+      window.forceStatsReload = function() {
+        console.log('手動統計データ再読み込み実行');
+        statsLoaded = false;
+        loadStatsData();
+      };
+      
+      // Turbo/form送信後にも統計データを再読み込み
+      document.addEventListener('turbo:load', function() {
+        if (!statsLoaded) {
+          loadStatsData();  
+        }
+        checkForStatsUpdate();
+      });
+    </script>
   </body>
 </html>

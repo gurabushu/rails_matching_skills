@@ -36,8 +36,8 @@ class UsersController < ApplicationController
     # 重複するスキルを取得（フィルター用）
     @available_skills = User.distinct.pluck(:skill).compact.reject(&:blank?).sort
     
-    # マッチング統計を取得（非同期で生成）
-    @match_stats = get_cached_match_stats
+    # 統計データの自動更新（1時間に1回）
+    ensure_fresh_stats
   end
 
   def guest_sign_in
@@ -55,7 +55,15 @@ class UsersController < ApplicationController
   end
 
   def show
+    # IDが数値でない場合はルートにリダイレクト
+    unless params[:id].to_s.match?(/\A\d+\z/)
+      redirect_to root_path, alert: "無効なユーザーIDです。"
+      return
+    end
+    
     @user = User.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to root_path, alert: "ユーザーが見つかりません。"
   end
 
   def edit
@@ -106,6 +114,34 @@ class UsersController < ApplicationController
 
   def user_skill_params
     params.require(:user).permit(:skill)
+  end
+  
+  def ensure_fresh_stats
+    json_path = Rails.root.join('public', 'match_stats.json')
+    
+    if File.exist?(json_path)
+      file_data = JSON.parse(File.read(json_path))
+      last_generated = Time.parse(file_data['generated_at']) rescue 2.hours.ago
+      
+      # 1時間以上古い場合は再生成
+      if last_generated < 1.hour.ago
+        generate_stats_async
+      end
+    else
+      generate_stats_async
+    end
+  end
+  
+  def generate_stats_async
+    script_path = Rails.root.join('lib', 'tasks', 'scripts', 'generate_match_stats.py')
+    python_path = Rails.root.join('.venv', 'bin', 'python')
+    
+    if File.exist?(python_path) && File.exist?(script_path)
+      # バックグラウンドで実行
+      Thread.new do
+        system("cd #{Rails.root} && #{python_path} #{script_path}")
+      end
+    end
   end
 
 end

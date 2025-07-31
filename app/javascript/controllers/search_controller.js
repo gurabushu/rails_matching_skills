@@ -8,6 +8,12 @@ export default class extends Controller {
     console.log("Search controller connected")
   }
   
+  // プルダウン変更時のフォーム送信
+  submitForm(event) {
+    console.log("Select changed, submitting form")
+    this.formTarget.requestSubmit()
+  }
+  
   // エンターキーでの検索
   submitOnEnter(event) {
     if (event.key === "Enter") {

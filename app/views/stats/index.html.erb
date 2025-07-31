@@ -1,0 +1,100 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="text-center mb-4">📊 アプリケーション統計情報</h1>
+      
+      <!-- 統計サマリー -->
+      <div class="row mb-4">
+        <div class="col-md-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h2 class="card-title text-primary"><%= @stats['total_users'] %></h2>
+              <p class="card-text">総ユーザー数</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h2 class="card-title text-success"><%= @stats['match_rate'] %>%</h2>
+              <p class="card-text">マッチ率</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h2 class="card-title text-info"><%= @stats['total_matches'] %></h2>
+              <p class="card-text">総マッチ数</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h2 class="card-title text-warning"><%= @stats['success_rate'] %>%</h2>
+              <p class="card-text">成功率</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 更新ボタン -->
+      <div class="row mb-4">
+        <div class="col-12 text-center">
+          <%= link_to "📈 統計データ更新", generate_stats_path, 
+                      method: :post, 
+                      class: "btn btn-primary",
+                      data: { confirm: "統計データを更新しますか？" } %>
+        </div>
+      </div>
+      
+      <!-- グラフ表示 -->
+      <div class="row">
+        <% if @images[:match_rate_chart] %>
+          <div class="col-md-6 mb-4">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-title">📊 マッチ率分析</h5>
+              </div>
+              <div class="card-body text-center">
+                <img src="/match_rate_chart.png" 
+                     alt="マッチ率チャート" 
+                     class="img-fluid"
+                     style="max-height: 400px;">
+              </div>
+            </div>
+          </div>
+        <% end %>
+        
+        <% if @images[:monthly_trend_chart] %>
+          <div class="col-md-6 mb-4">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-title">📈 月別トレンド</h5>
+              </div>
+              <div class="card-body text-center">
+                <img src="/monthly_trend_chart.png" 
+                     alt="月別トレンドチャート" 
+                     class="img-fluid"
+                     style="max-height: 400px;">
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      
+      <!-- フッター情報 -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="alert alert-info">
+            <small>
+              <i class="fas fa-clock"></i> 
+              最終更新: <%= Time.parse(@stats['generated_at']).strftime("%Y年%m月%d日 %H:%M:%S") if @stats['generated_at'] %>
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

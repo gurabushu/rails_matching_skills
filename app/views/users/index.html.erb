@@ -1,70 +1,70 @@
-<h1>新定番！スキルマッチングのプラットフォーム</h1>
+<% unless user_signed_in? %>
+  <h1>新定番！スキルマッチングのプラットフォーム</h1>
 
-<div class="title-description">
-  <p>双方の必要なスキルをマッチング</br>
-    <span class="subtitle">スキルを共有し、新しいつながりを見つけよう</span></br>
-    無償でスキルを交換し、マッチングを実現するプラットフォームです。</p>
-</div>
+  <div class="title-description">
+    <p>双方の必要なスキルをマッチング</br>
+      <span class="subtitle">スキルを共有し、新しいつながりを見つけよう</span></br>
+      無償でスキルを交換し、マッチングを実現するプラットフォームです。</p>
+  </div>
 
-<!-- マッチング統計セクション -->
-<% if @match_stats && match_stats_available? %>
-<div class="stats-section">
-  <div class="stats-header">
-    <h2>📊 サービス統計</h2>
-    <p>リアルタイムでのマッチング成果をご覧ください</p>
+  <!-- 統計情報セクション（ログアウト時） -->
+  <div class="stats-section">
+    <div class="stats-header">
+      <h2>📊 サービス統計</h2>
+      <p>リアルタイムでのマッチング成果をご覧ください</p>
+      <div style="margin-top: 15px;">
+        <%= button_to "📈 統計データ更新", generate_stats_path, 
+                      method: :post, 
+                      class: "btn btn-sm btn-primary",
+                      title: "統計データを最新に更新",
+                      data: { confirm: "統計データを更新しますか？" },
+                      style: "display: inline-block;" %>
+      </div>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" id="total-users-landing">-</div>
+        <div class="stat-label">登録ユーザー数</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-number" id="match-rate-landing">-%</div>
+        <div class="stat-label">マッチ成功率</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-number" id="total-matches-landing">-</div>
+        <div class="stat-label">総マッチ数</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-number" id="success-rate-landing">-%</div>
+        <div class="stat-label">取引成功率</div>
+      </div>
+    </div>
+    
+    <div class="charts-container">
+      <% if File.exist?(Rails.root.join('public', 'match_rate_chart.png')) %>
+        <div class="chart-item">
+          <h3>ユーザーマッチ率</h3>
+          <img src="/match_rate_chart.png" alt="マッチ率グラフ" class="chart-image" loading="lazy">
+        </div>
+      <% end %>
+      
+      <% if File.exist?(Rails.root.join('public', 'monthly_trend_chart.png')) %>
+        <div class="chart-item">
+          <h3>月別マッチング推移</h3>
+          <img src="/monthly_trend_chart.png" alt="月別マッチング推移" class="chart-image" loading="lazy">
+        </div>
+      <% end %>
+    </div>
   </div>
-  
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-number"><%= @match_stats['total_users'] %></div>
-      <div class="stat-label">登録ユーザー数</div>
-    </div>
-    
-    <div class="stat-card">
-      <div class="stat-number"><%= @match_stats['match_rate'] %>%</div>
-      <div class="stat-label">マッチ成功率</div>
-    </div>
-    
-    <div class="stat-card">
-      <div class="stat-number"><%= @match_stats['total_matches'] %></div>
-      <div class="stat-label">総マッチ数</div>
-    </div>
-    
-    <div class="stat-card">
-      <div class="stat-number"><%= @match_stats['success_rate'] %>%</div>
-      <div class="stat-label">取引成功率</div>
-    </div>
-  </div>
-  
-  <div class="charts-container">
-    <div class="chart-item">
-      <h3>ユーザーマッチ率</h3>
-      <%= image_tag "match_rate_chart.png", alt: "マッチ率グラフ", class: "chart-image", loading: "lazy" %>
-    </div>
-    
-    <div class="chart-item">
-      <h3>月別マッチング推移</h3>
-      <%= image_tag "monthly_trend_chart.png", alt: "月別マッチング推移", class: "chart-image", loading: "lazy" %>
-    </div>
-  </div>
-</div>
 <% end %>
 
 <!-- ナビゲーション -->
-<div class="navigation">
-  <% if user_signed_in? %>
-    <p>ようこそ、<%= current_user.name %>さん！</p>
-    <div class="user-actions">
-      <%= link_to "マッチング", matches_path, class: "btn btn-info" %>
-      <%= link_to "チャット", chat_rooms_path, class: "btn btn-outline" %>
-      <%= link_to "スキル交換", deals_path, class: "btn btn-outline" %>
-      <%= link_to "プロフィール編集", edit_user_path(current_user), class: "btn btn-primary" %>
-      <%= button_to "ログアウト", destroy_user_session_path, method: :delete, 
-                    data: { confirm: "ログアウトしますか？" }, 
-                    class: "btn btn-secondary",
-                    form: { style: "display: inline-block;" } %>
-    </div>
-  <% else %>
+<% unless user_signed_in? %>
+  <div class="navigation">
     <p>スキルを共有し、新しいつながりを見つけよう</p>
     <div class="auth-actions">
       <%= link_to "ログイン", new_user_session_path, class: "btn btn-primary" %>
@@ -73,8 +73,8 @@
                     class: "btn btn-info",
                     form: { style: "display: inline-block;" } %>
     </div>
-  <% end %>
-</div>
+  </div>
+<% end %>
 
 <!-- ユーザー一覧 -->
 <section class="users-list">
@@ -100,7 +100,9 @@
                       @available_skills.map { |skill| [skill, skill] }, 
                       params[:skill_filter]),
                       {}, 
-                      { class: "skill-filter", onchange: "this.form.submit();" } %>
+                      { class: "skill-filter", 
+                        data: { action: "change->search#submitForm" },
+                        onchange: "this.form.submit();" } %>
         </div>
         
         <div class="sort-field">
@@ -112,7 +114,9 @@
                         ['スキル順', 'skill']
                       ], params[:sort]),
                       {}, 
-                      { class: "sort-select", onchange: "this.form.submit();" } %>
+                      { class: "sort-select", 
+                        data: { action: "change->search#submitForm" },
+                        onchange: "this.form.submit();" } %>
         </div>
         
         <div class="search-buttons">
@@ -212,3 +216,53 @@
     </div>
   <% end %>
 </section>
+
+<!-- プルダウンメニュー用のJavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM loaded, setting up select event listeners');
+  
+  // スキルフィルターのプルダウン
+  const skillFilter = document.querySelector('.skill-filter');
+  if (skillFilter) {
+    console.log('Skill filter found');
+    skillFilter.addEventListener('change', function() {
+      console.log('Skill filter changed to:', this.value);
+      this.form.submit();
+    });
+  }
+  
+  // ソートのプルダウン
+  const sortSelect = document.querySelector('.sort-select');
+  if (sortSelect) {
+    console.log('Sort select found');
+    sortSelect.addEventListener('change', function() {
+      console.log('Sort changed to:', this.value);
+      this.form.submit();
+    });
+  }
+});
+
+// Turbo対応
+document.addEventListener('turbo:load', function() {
+  console.log('Turbo loaded, re-setting up select event listeners');
+  
+  const skillFilter = document.querySelector('.skill-filter');
+  if (skillFilter && !skillFilter.dataset.listenerAdded) {
+    skillFilter.addEventListener('change', function() {
+      console.log('Skill filter changed (turbo):', this.value);
+      this.form.submit();
+    });
+    skillFilter.dataset.listenerAdded = 'true';
+  }
+  
+  const sortSelect = document.querySelector('.sort-select');
+  if (sortSelect && !sortSelect.dataset.listenerAdded) {
+    sortSelect.addEventListener('change', function() {
+      console.log('Sort changed (turbo):', this.value);
+      this.form.submit();
+    });
+    sortSelect.dataset.listenerAdded = 'true';
+  }
+});
+</script>
