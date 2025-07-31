@@ -1,24 +1,66 @@
-# README
+スキマッチ - 新定番！お互いの得意を交換して、身近なそれぞれの問題解決アプリ
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+１、サービス概要
+「あれがやりたいけど、部分的にスキルが少し足りない」「始めるにしても学習コストがかかる」
+そんな時にスキマッチで、互いに自身のスキルをトレードし助け合う、完全無料のアプリ
 
-Things you may want to cover:
+２、サービズ画像
+<img width="3023" height="2039" alt="github_match_apply_img" src="https://github.com/user-attachments/assets/bb0d5a0a-b422-4a74-9ec5-f937afdff033" />
 
-* Ruby version
+3、サービスURL
 
-* System dependencies
 
-* Configuration
+４、サービスの概要
+「スキマッチ」は、同じウェブ業界、IT業界で働く方々、もしくはスキルを身につけている学習者にとって斬新かつ、ローコストなスキル共有アプリです。
+より良い開発・制作の環境提供を旨とする、専門スキル共有型プラットフォームになります。
+ポートフォリオの実績にも使用可能。無償という点が何より敷居が低く、手軽に利用できる点が魅力です。
+前提としてスキル保有者に限る。
 
-* Database creation
+５、開発の背景
+スキルがお金に変わり。お金もスキルに変わるのなら、スキルもスキルに変えられるはずという発想から生まれました。世の中におけるニーズや問題解決はスキル保有者の特権である必要はなく、むしろより広く手に届きやすい形で行き届くべきだと考えました。世の中を良くする発想や着想を得ても、それをやるためのピンポイントな特定のスキルが現在ない。「学習を今から始めるか？」「それにはコストがかかる」そうしていつしか忘れてしまう。
 
-* Database initialization
+このアプリは建設的な形で時には世の中への問題提起とともに解決を行い、双方の実利を得る。
+ウィンウィンの結果をもたらす、社会の発展と個人のスキルや財産に紐づく幸せに大きく寄与する新しい形のアプリです。
+ネーミング：隙間にマッチする。スキルにマッチする。そして好きにマッチするの意もあり。
 
-* How to run the test suite
+６。機能
+ホーム画面
+・リアルタイムのマッチング/月別マッチング数/マッチング成立率
+・スキル一覧
+・ログインフォーム/新規登録/ゲストユーザー
+・スキル絞り込み検索バー
+取引画面
+・チャット、ファイル送信機能
+・スキル交換提案フォーム
+アカウント情報
+・プロフィール編集
+・設定password,email
+・
 
-* Services (job queues, cache servers, search engines, etc.)
 
-* Deployment instructions
+７、主な技術
+フロントエンド
+・HTML/CSS/Javascript/json
 
-* ...
+バックエンド
+・ルビー3.3.3
+・Ruby on rails 8
+・puthon
+・SQL
+
+インフラ・環境構築
+・Git/Github
+・Heroku
+
+ER図
+<img width="3756" height="2441" alt="er_diagram" src="https://github.com/user-attachments/assets/84447fbe-2c9b-4127-8027-74dbb2324ce0" />
+
+９私の展望
+
+短期的な億票
+・UI修正
+
+中期的な目標
+・ユーザー同士が対等に取引できるように仕様を追加する
+
+
