@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  id: 1
+  name: Test User One
+  email: test1@example.com
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
+  skill: Web Development
+  description: Test user description
+
+two:
+  id: 2
+  name: Test User Two
+  email: test2@example.com
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
+  skill: Design
+  description: Another test user

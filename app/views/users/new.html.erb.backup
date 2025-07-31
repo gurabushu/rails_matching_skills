@@ -1,0 +1,47 @@
+<%= render "form", user: @user %>
+<h2>新規ユーザー登録</h2>
+<% if @user.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+    <ul>
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<p>新しいユーザーを登録するには、以下のフォームに必要事項を入力してください。</p>
+<%= form_with(model: @user, local: true) do |form| %>
+  <div class="field">
+    <%= form.label :name, "名前" %>
+    <%= form.text_field :name, required: true %>
+  </div>
+  <div class="field">
+    <%= form.label :email, "メールアドレス" %>
+    <%= form.email_field :email, required: true %>
+  </div>
+  <div class="field">
+    <%= form.label :password, "パスワード" %>
+    <%= form.password_field :password, required: true %>
+  </div>
+  <div class="field">
+    <%= form.label :password_confirmation, "パスワード確認" %>
+    <%= form.password_field :password_confirmation, required: true %>
+  </div>
+  <div class="field">
+    <%= form.label :skill, "スキル" %>
+    <%= form.text_field :skill, required: true %>
+  </div>
+  <div class="actions">
+    <%= form.submit "登録" %>
+  </div>
+<% end %>
+<p>既にアカウントをお持ちの方は、<%= link_to "ログイン", new_user_session_path %>してください。</p>
+<p>スキルマッチングのために、登録したスキルを他のユーザーと共有できます。</p>
+<p>登録後は、プロフィール編集やスキルの更新が可能です。</p>
+<p>登録が完了すると、スキルマッチングの機能を利用できるようになります。</p>
+<p>スキルマッチングのために、他のユーザーとスキルを共有し、マッチングの機会を増やしましょう。</p>
+
+
+<%= link_to "戻る", users_path %>

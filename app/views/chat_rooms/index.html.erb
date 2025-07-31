@@ -1,0 +1,132 @@
+<div class="container">
+  <div class="header">
+    <h1>チャット</h1>
+    <%= link_to "マッチング", matches_path, class: "btn btn-outline" %>
+    <%= link_to "スキル交換", deals_path, class: "btn btn-outline" %>
+  </div>
+
+  <div class="chat-rooms">
+    <% if @chat_rooms.any? %>
+      <% @chat_rooms.each do |chat_room| %>
+        <div class="chat-room-card">
+          <%= link_to chat_room_path(chat_room), class: "chat-room-link" do %>
+            <div class="chat-room-info">
+              <h3><%= chat_room.name %></h3>
+              <% if chat_room.last_message %>
+                <p class="last-message">
+                  <span class="sender"><%= chat_room.last_message.user.name %></span>:
+                  <%= truncate(chat_room.last_message.content, length: 50) %>
+                </p>
+                <small class="timestamp">
+                  <%= time_ago_in_words(chat_room.last_message.created_at) %>前
+                </small>
+              <% else %>
+                <p class="no-messages">まだメッセージがありません</p>
+              <% end %>
+            </div>
+            <% if chat_room.unread_messages_count(current_user) > 0 %>
+              <div class="unread-badge">
+                <%= chat_room.unread_messages_count(current_user) %>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="empty-state">
+        <h3>チャットルームがありません</h3>
+        <p>マッチしたユーザーとチャットを開始できます。</p>
+        <%= link_to "マッチング一覧", matches_path, class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+<%= link_to "戻る", matches_path, class: "btn btn-secondary" %>
+
+<style>
+.chat-rooms {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.chat-room-card {
+  background: white;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: box-shadow 0.2s;
+}
+
+.chat-room-card:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.chat-room-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.chat-room-info h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.last-message {
+  margin: 0 0 4px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.sender {
+  font-weight: 600;
+  color: #4a90e2;
+}
+
+.timestamp {
+  color: #999;
+  font-size: 12px;
+}
+
+.no-messages {
+  color: #999;
+  font-style: italic;
+  margin: 0;
+}
+
+.unread-badge {
+  background: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e1e5e9;
+}
+
+.empty-state h3 {
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  color: #999;
+  margin-bottom: 20px;
+}
+</style>
