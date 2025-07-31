@@ -8,7 +8,7 @@
 <img width="3023" height="2039" alt="github_match_apply_img" src="https://github.com/user-attachments/assets/bb0d5a0a-b422-4a74-9ec5-f937afdff033" />
 
 3、サービスURL
-
+https://rails-match-apply-new-ac372e443c7c.herokuapp.com/
 
 ４、サービスの概要
 「スキマッチ」は、同じウェブ業界、IT業界で働く方々、もしくはスキルを身につけている学習者にとって斬新かつ、ローコストなスキル共有アプリです。
@@ -46,7 +46,8 @@
 ・ルビー3.3.3
 ・Ruby on rails 8
 ・puthon
-・SQL
+・PostgreSQL
+
 
 インフラ・環境構築
 ・Git/Github
