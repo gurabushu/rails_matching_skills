@@ -24,15 +24,4 @@ test:
 # Store production database in the storage/ directory, which by default
 # is mounted as a persistent Docker volume in config/deploy.yml.
 production:
-  primary:
-    url: <%= ENV.fetch("DATABASE_URL") { "postgresql://localhost/rails_match_apply_production" } %>
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  cache:
-    url: <%= ENV.fetch("CACHE_DATABASE_URL") { ENV.fetch("DATABASE_URL") { "postgresql://localhost/rails_match_apply_cache_production" } } %>
-    migrations_paths: db/cache_migrate
-  queue:
-    url: <%= ENV.fetch("QUEUE_DATABASE_URL") { ENV.fetch("DATABASE_URL") { "postgresql://localhost/rails_match_apply_queue_production" } } %>
-    migrations_paths: db/queue_migrate
-  cable:
-    url: <%= ENV.fetch("CABLE_DATABASE_URL") { ENV.fetch("DATABASE_URL") { "postgresql://localhost/rails_match_apply_cable_production" } } %>
-    migrations_paths: db/cable_migrate
+  url: <%= ENV['DATABASE_URL'] %>
