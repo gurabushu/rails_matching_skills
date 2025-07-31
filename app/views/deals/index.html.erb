@@ -1,0 +1,300 @@
+<div class="container">
+  <div class="header">
+    <h1>スキル交換管理</h1>
+    <%= link_to "チャット", chat_rooms_path, class: "btn btn-outline" %>
+    <%= link_to "マッチング", matches_path, class: "btn btn-outline" %>
+  </div>
+
+  <div class="deals-tabs">
+    <div class="tab-buttons">
+      <button class="tab-btn active" data-tab="client">提案した交換</button>
+      <button class="tab-btn" data-tab="freelancer">依頼された交換</button>
+    </div>
+
+    <div class="tab-content active" id="client-tab">
+      <% if @client_deals.any? %>
+        <div class="deals-grid">
+          <% @client_deals.each do |deal| %>
+            <div class="deal-card">
+              <%= link_to deal_path(deal), class: "deal-link" do %>
+                <div class="deal-header">
+                  <h3><%= deal.title %></h3>
+                  <span class="status-badge status-<%= deal.status_name %>">
+                    <%= case deal.status_name
+                        when 'pending' then '提案中'
+                        when 'accepted' then '受諾済み'
+                        when 'in_progress' then '作業中'
+                        when 'completed' then '完了'
+                        when 'cancelled' then 'キャンセル'
+                        else deal.status_name
+                        end %>
+                  </span>
+                </div>
+                <div class="deal-info">
+                  <p class="freelancer">相手: <%= deal.freelancer.name %></p>
+                  <% if deal.deadline %>
+                    <p class="deadline">納品予定: <%= deal.deadline.strftime("%Y/%m/%d") %></p>
+                  <% end %>
+                </div>
+                <% if deal.description.present? %>
+                  <p class="description">
+                    <%= truncate(deal.description, length: 100) %>
+                  </p>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="empty-state">
+          <h3>提案したスキル交換がありません</h3>
+          <p>マッチしたユーザーとチャットからスキル交換を提案できます。</p>
+          <%= link_to "チャット一覧", chat_rooms_path, class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="tab-content" id="freelancer-tab">
+      <% if @freelancer_deals.any? %>
+        <div class="deals-grid">
+          <% @freelancer_deals.each do |deal| %>
+            <div class="deal-card">
+              <%= link_to deal_path(deal), class: "deal-link" do %>
+                <div class="deal-header">
+                  <h3><%= deal.title %></h3>
+                  <span class="status-badge status-<%= deal.status_name %>">
+                    <%= case deal.status_name
+                        when 'pending' then '提案中'
+                        when 'accepted' then '受諾済み'
+                        when 'in_progress' then '作業中'
+                        when 'completed' then '完了'
+                        when 'cancelled' then 'キャンセル'
+                        else deal.status_name
+                        end %>
+                  </span>
+                </div>
+                <div class="deal-info">
+                  <p class="client">依頼者: <%= deal.client.name %></p>
+                  <% if deal.deadline %>
+                    <p class="deadline">納品予定: <%= deal.deadline.strftime("%Y/%m/%d") %></p>
+                  <% end %>
+                </div>
+                <% if deal.description.present? %>
+                  <p class="description">
+                    <%= truncate(deal.description, length: 100) %>
+                  </p>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="empty-state">
+          <h3>依頼されたスキル交換がありません</h3>
+          <p>他のユーザーからスキル交換の提案を受けることができます。</p>
+          <%= link_to "チャット一覧", chat_rooms_path, class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<%= link_to "戻る", chat_rooms_path, class: "btn btn-secondary" %>
+
+<style>
+.deals-tabs {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.tab-buttons {
+  display: flex;
+  border-bottom: 2px solid #e1e5e9;
+  margin-bottom: 30px;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  color: #666;
+  transition: all 0.3s;
+}
+
+.tab-btn.active {
+  color: #4a90e2;
+  border-bottom-color: #4a90e2;
+}
+
+.tab-btn:hover {
+  color: #4a90e2;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.deals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.deal-card {
+  background: white;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: box-shadow 0.2s;
+}
+
+.deal-card:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.deal-link {
+  display: block;
+  padding: 20px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.deal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.deal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+  flex: 1;
+  margin-right: 12px;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-accepted {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-in_progress {
+  background: #cce7ff;
+  color: #004085;
+}
+
+.status-completed {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.status-cancelled {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.deal-info {
+  margin-bottom: 12px;
+}
+
+.deal-info p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.price {
+  font-weight: 600;
+  color: #4a90e2;
+}
+
+.description {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e1e5e9;
+}
+
+.empty-state h3 {
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  color: #999;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .deals-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tab-buttons {
+    flex-direction: column;
+  }
+  
+  .tab-btn {
+    text-align: left;
+    border-bottom: 1px solid #e1e5e9;
+  }
+  
+  .tab-btn.active {
+    border-bottom-color: #4a90e2;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+  
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const tabName = button.dataset.tab;
+      
+      // タブボタンのアクティブ状態を更新
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      
+      // タブコンテンツの表示を更新
+      tabContents.forEach(content => {
+        content.classList.remove('active');
+        if (content.id === tabName + '-tab') {
+          content.classList.add('active');
+        }
+      });
+    });
+  });
+});
+</script>

@@ -1,0 +1,221 @@
+<div class="container">
+  <div class="form-container">
+    <div class="form-header">
+      <% chat_room = @match.chat_room || @match.create_chat_room! %>
+      <%= link_to chat_room_path(chat_room), class: "back-btn" do %>
+        ← チャットに戻る
+      <% end %>
+      <h1>スキル交換を提案</h1>
+      <p>相手: <strong><%= @match.user == current_user ? @match.target_user.name : @match.user.name %></strong></p>
+    </div>
+
+    <%= form_with model: [@match, @deal], local: true, class: "deal-form" do |form| %>
+      <% if @deal.errors.any? %>
+        <div class="error-messages">
+          <h4><%= pluralize(@deal.errors.count, "error") %> prohibited this deal from being saved:</h4>
+          <ul>
+            <% @deal.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="form-group">
+        <%= form.label :title, "交換タイトル", class: "form-label" %>
+        <%= form.text_field :title, class: "form-control", placeholder: "例: ウェブサイトのデザイン制作" %>
+      </div>
+
+      <div class="form-group">
+        <%= form.label :description, "交換内容", class: "form-label" %>
+        <%= form.text_area :description, rows: 6, class: "form-control", 
+                          placeholder: "スキル交換の詳細な内容、要件、成果物などを記載してください" %>
+      </div>
+
+      <div class="form-group">
+        <%= form.label :deadline, "納品予定日", class: "form-label" %>
+        <%= form.date_field :deadline, class: "form-control", min: Date.current %>
+        <small class="form-help">いつまでに完成させる予定ですか？</small>
+      </div>
+
+      <div class="form-actions">
+        <%= form.submit "スキル交換を提案する", class: "btn btn-primary" %>
+        <% chat_room = @match.chat_room || @match.create_chat_room! %>
+        <%= link_to "キャンセル", chat_room_path(chat_room), class: "btn btn-outline" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<style>
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.form-header {
+  background: #f8f9fa;
+  padding: 24px;
+  border-bottom: 1px solid #e1e5e9;
+}
+
+.back-btn {
+  display: inline-block;
+  color: #4a90e2;
+  text-decoration: none;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.back-btn:hover {
+  opacity: 0.8;
+}
+
+.form-header h1 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 24px;
+}
+
+.form-header p {
+  margin: 0;
+  color: #666;
+}
+
+.deal-form {
+  padding: 24px;
+}
+
+.error-messages {
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.error-messages h4 {
+  color: #721c24;
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.error-messages ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.error-messages li {
+  color: #721c24;
+  margin-bottom: 4px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.form-control[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.form-control[type="number"]::-webkit-outer-spin-button,
+.form-control[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  padding-top: 24px;
+  border-top: 1px solid #e1e5e9;
+}
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #4a90e2;
+  color: white;
+  flex: 1;
+}
+
+.btn-primary:hover {
+  background: #357abd;
+}
+
+.btn-outline {
+  background: white;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.btn-outline:hover {
+  background: #f8f9fa;
+  border-color: #4a90e2;
+  color: #4a90e2;
+}
+
+@media (max-width: 768px) {
+  .form-container {
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+}
+</style>

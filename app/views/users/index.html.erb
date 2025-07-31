@@ -1,0 +1,214 @@
+<h1>新定番！スキルマッチングのプラットフォーム</h1>
+
+<div class="title-description">
+  <p>双方の必要なスキルをマッチング</br>
+    <span class="subtitle">スキルを共有し、新しいつながりを見つけよう</span></br>
+    無償でスキルを交換し、マッチングを実現するプラットフォームです。</p>
+</div>
+
+<!-- マッチング統計セクション -->
+<% if @match_stats && match_stats_available? %>
+<div class="stats-section">
+  <div class="stats-header">
+    <h2>📊 サービス統計</h2>
+    <p>リアルタイムでのマッチング成果をご覧ください</p>
+  </div>
+  
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number"><%= @match_stats['total_users'] %></div>
+      <div class="stat-label">登録ユーザー数</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-number"><%= @match_stats['match_rate'] %>%</div>
+      <div class="stat-label">マッチ成功率</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-number"><%= @match_stats['total_matches'] %></div>
+      <div class="stat-label">総マッチ数</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-number"><%= @match_stats['success_rate'] %>%</div>
+      <div class="stat-label">取引成功率</div>
+    </div>
+  </div>
+  
+  <div class="charts-container">
+    <div class="chart-item">
+      <h3>ユーザーマッチ率</h3>
+      <%= image_tag "match_rate_chart.png", alt: "マッチ率グラフ", class: "chart-image", loading: "lazy" %>
+    </div>
+    
+    <div class="chart-item">
+      <h3>月別マッチング推移</h3>
+      <%= image_tag "monthly_trend_chart.png", alt: "月別マッチング推移", class: "chart-image", loading: "lazy" %>
+    </div>
+  </div>
+</div>
+<% end %>
+
+<!-- ナビゲーション -->
+<div class="navigation">
+  <% if user_signed_in? %>
+    <p>ようこそ、<%= current_user.name %>さん！</p>
+    <div class="user-actions">
+      <%= link_to "マッチング", matches_path, class: "btn btn-info" %>
+      <%= link_to "チャット", chat_rooms_path, class: "btn btn-outline" %>
+      <%= link_to "スキル交換", deals_path, class: "btn btn-outline" %>
+      <%= link_to "プロフィール編集", edit_user_path(current_user), class: "btn btn-primary" %>
+      <%= button_to "ログアウト", destroy_user_session_path, method: :delete, 
+                    data: { confirm: "ログアウトしますか？" }, 
+                    class: "btn btn-secondary",
+                    form: { style: "display: inline-block;" } %>
+    </div>
+  <% else %>
+    <p>スキルを共有し、新しいつながりを見つけよう</p>
+    <div class="auth-actions">
+      <%= link_to "ログイン", new_user_session_path, class: "btn btn-primary" %>
+      <%= link_to "新規登録", new_user_registration_path, class: "btn btn-success" %>
+      <%= button_to "ゲストログイン", users_guest_sign_in_path, method: :post, 
+                    class: "btn btn-info",
+                    form: { style: "display: inline-block;" } %>
+    </div>
+  <% end %>
+</div>
+
+<!-- ユーザー一覧 -->
+<section class="users-list">
+  <h2>スキル一覧</h2>
+  
+  <!-- 検索・フィルターフォーム -->
+  <div class="search-section">
+    <%= form_with url: root_path, method: :get, local: true, 
+                  class: "search-form", 
+                  data: { controller: "search", search_target: "form" } do |f| %>
+      <div class="search-row">
+        <div class="search-field">
+          <%= f.text_field :search, 
+                          placeholder: "名前、スキル、自己紹介から検索...", 
+                          value: params[:search],
+                          class: "search-input",
+                          data: { search_target: "input", action: "keydown->search#submitOnEnter" } %>
+        </div>
+        
+        <div class="filter-field">
+          <%= f.select :skill_filter, 
+                      options_for_select([['すべてのスキル', '']] + 
+                      @available_skills.map { |skill| [skill, skill] }, 
+                      params[:skill_filter]),
+                      {}, 
+                      { class: "skill-filter", onchange: "this.form.submit();" } %>
+        </div>
+        
+        <div class="sort-field">
+          <%= f.select :sort, 
+                      options_for_select([
+                        ['新しい順', 'newest'],
+                        ['古い順', 'oldest'], 
+                        ['名前順', 'name'],
+                        ['スキル順', 'skill']
+                      ], params[:sort]),
+                      {}, 
+                      { class: "sort-select", onchange: "this.form.submit();" } %>
+        </div>
+        
+        <div class="search-buttons">
+          <%= f.submit "検索", class: "btn btn-primary search-btn" %>
+          <%= link_to "クリア", root_path, class: "btn btn-secondary clear-btn",
+                      data: { action: "click->search#clear" } %>
+        </div>
+      </div>
+    <% end %>
+    
+    <!-- 検索結果の表示 -->
+    <div class="search-results-info">
+      <% if params[:search].present? || params[:skill_filter].present? %>
+        <p class="search-info">
+          <% if params[:search].present? %>
+            「<strong><%= params[:search] %></strong>」で検索
+          <% end %>
+          <% if params[:skill_filter].present? %>
+            <% if params[:search].present? %> / <% end %>
+            スキル「<strong><%= params[:skill_filter] %></strong>」でフィルター
+          <% end %>
+          - <strong><%= @users.count %></strong>件見つかりました
+        </p>
+      <% else %>
+        <p class="total-info">全<strong><%= @users.count %></strong>件のユーザー</p>
+      <% end %>
+    </div>
+  </div>
+  
+  <% if @users.any? %>
+    <div class="users-grid">
+      <% @users.each do |user| %>
+        <div class="user-card">
+          <% if user.name.present? %>
+            <h3><%= link_to user.name, user_path(user), class: "user-name-link" %></h3>
+          <% end %>
+          
+          <% if user.skill.present? %>
+            <p class="skill"><strong>スキル:</strong> <%= user.skill %></p>
+          <% else %>
+            <p class="skill no-skill"><strong>スキル:</strong> 未設定</p>
+          <% end %>
+          
+          <% if user.description.present? %>
+            <p class="description"><%= truncate(user.description, length: 100) %></p>
+          <% else %>
+            <p class="description no-description">自己紹介未設定</p>
+          <% end %>
+          <p class="created-at">登録日: <%= user.created_at.strftime("%Y年%m月%d日") %></p>
+          
+          <div class="user-actions">
+            <%= link_to "詳細を見る", user_path(user), class: "btn btn-outline btn-sm" %>
+            
+            <!-- マッチングボタン -->
+            <% if user_signed_in? && user != current_user %>
+              <div class="match-actions">
+                <% case current_user.match_status_with(user) %>
+                <% when :matched %>
+                  <span class="match-status matched">
+                    ✨ マッチ済み
+                  </span>
+                <% when :sent_pending %>
+                  <span class="match-status pending">
+                    ⏳ いいね送信済み
+                  </span>
+                  <%= button_to "取り消す", destroy_match_path(user), 
+                              method: :delete, 
+                              class: "btn btn-outline-secondary btn-sm",
+                              data: { confirm: "いいねを取り消しますか？" } %>
+                <% when :received_pending %>
+                  <span class="match-status received">
+                    💌 いいねが届いています
+                  </span>
+                <% else %>
+                  <%= button_to "👍 いいね", create_match_path(user), 
+                              method: :post, 
+                              class: "btn btn-primary btn-sm match-btn" %>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="no-results">
+      <% if params[:search].present? || params[:skill_filter].present? %>
+        <p class="no-results-message">
+          検索条件に一致するユーザーが見つかりませんでした。
+        </p>
+        <p class="no-results-suggestion">
+          別のキーワードで検索するか、フィルターを変更してお試しください。
+        </p>
+      <% else %>
+        <p class="no-users">まだユーザーが登録されていません。</p>
+      <% end %>
+    </div>
+  <% end %>
+</section>

@@ -1,0 +1,190 @@
+<div class="container">
+  <div class="profile-container">
+    <div class="profile-header">
+      <%= link_to root_path, class: "back-btn" do %>
+        ← ユーザー一覧に戻る
+      <% end %>
+      <h1><%= @user.name %>さんのプロフィール</h1>
+    </div>
+
+    <div class="profile-content">
+      <div class="profile-card">
+        <div class="profile-info">
+          <div class="info-item">
+            <label>名前</label>
+            <span><%= @user.name %></span>
+          </div>
+          
+          <div class="info-item">
+            <label>スキル</label>
+            <span class="skill-tag"><%= @user.skill %></span>
+          </div>
+          
+          <% if @user.description.present? %>
+            <div class="info-item">
+              <label>自己紹介</label>
+              <div class="description">
+                <%= simple_format(@user.description) %>
+              </div>
+            </div>
+          <% end %>
+          
+          <div class="info-item">
+            <label>登録日</label>
+            <span><%= @user.created_at.strftime("%Y年%m月%d日") %></span>
+          </div>
+        </div>
+
+        <div class="profile-actions">
+          <% if current_user == @user %>
+            <%= link_to "プロフィール編集", edit_user_path(@user), class: "btn btn-primary" %>
+          <% elsif user_signed_in? && !current_user.guest_user? %>
+            <% if current_user.sent_match_to?(@user) %>
+              <%= button_to "いいねを取り消す", destroy_match_path(@user), 
+                           method: :delete, 
+                           class: "btn btn-outline-danger",
+                           data: { confirm: "いいねを取り消しますか？" } %>
+            <% else %>
+              <%= button_to "いいね", create_match_path(@user), 
+                           method: :post, 
+                           class: "btn btn-success" %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.profile-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.profile-header {
+  margin-bottom: 30px;
+}
+
+.back-btn {
+  display: inline-block;
+  color: #4a90e2;
+  text-decoration: none;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.back-btn:hover {
+  opacity: 0.8;
+}
+
+.profile-header h1 {
+  margin: 0;
+  color: #333;
+  text-align: left;
+}
+
+.profile-card {
+  background: white;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.profile-info {
+  margin-bottom: 30px;
+}
+
+.info-item {
+  margin-bottom: 20px;
+}
+
+.info-item label {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.info-item span,
+.info-item .description {
+  font-size: 16px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.skill-tag {
+  background: #4a90e2;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.description {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 6px;
+  border-left: 4px solid #4a90e2;
+}
+
+.profile-actions {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #e1e5e9;
+}
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #4a90e2;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #357abd;
+}
+
+.btn-success {
+  background: #28a745;
+  color: white;
+}
+
+.btn-success:hover {
+  background: #218838;
+}
+
+.btn-outline-danger {
+  background: white;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+}
+
+.btn-outline-danger:hover {
+  background: #dc3545;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .profile-card {
+    padding: 20px;
+    margin: 0 10px;
+  }
+}
+</style>
