@@ -43,6 +43,10 @@ Rails.application.routes.draw do
     resources :deals, only: [:new, :create]
   end
   
+  # 統計情報
+  get 'stats', to: 'stats#index', as: 'stats_index'
+  post 'stats/generate', to: 'stats#generate_stats', as: 'generate_stats'
+  
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

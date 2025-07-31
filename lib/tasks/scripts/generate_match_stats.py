@@ -156,11 +156,19 @@ def generate_match_rate_chart(stats):
     output_path = os.path.join(script_dir, '..', '..', '..', 'app', 'assets', 'images', 'match_rate_chart.png')
     output_path = os.path.abspath(output_path)
     
+    # publicディレクトリにもコピー
+    public_path = os.path.join(script_dir, '..', '..', '..', 'public', 'match_rate_chart.png')
+    public_path = os.path.abspath(public_path)
+    
     # ディレクトリが存在しない場合は作成
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    os.makedirs(os.path.dirname(public_path), exist_ok=True)
     
     print(f"Saving chart to: {output_path}")
     plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white')
+    
+    print(f"Copying chart to: {public_path}")
+    plt.savefig(public_path, dpi=300, bbox_inches='tight', facecolor='white')
     plt.close()
     
     return True
@@ -217,11 +225,19 @@ def generate_monthly_trend_chart(stats):
     output_path = os.path.join(script_dir, '..', '..', '..', 'app', 'assets', 'images', 'monthly_trend_chart.png')
     output_path = os.path.abspath(output_path)
     
+    # publicディレクトリにもコピー
+    public_path = os.path.join(script_dir, '..', '..', '..', 'public', 'monthly_trend_chart.png')
+    public_path = os.path.abspath(public_path)
+    
     # ディレクトリが存在しない場合は作成
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    os.makedirs(os.path.dirname(public_path), exist_ok=True)
     
     print(f"Saving trend chart to: {output_path}")
     plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white')
+    
+    print(f"Copying trend chart to: {public_path}")
+    plt.savefig(public_path, dpi=300, bbox_inches='tight', facecolor='white')
     plt.close()
     
     return True
