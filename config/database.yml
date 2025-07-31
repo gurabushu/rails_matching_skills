@@ -25,5 +25,6 @@ test:
 # is mounted as a persistent Docker volume in config/deploy.yml.
 production:
   adapter: postgresql
-  url: <%= ENV['DATABASE_URL'] %>
+  encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  url: <%= ENV['DATABASE_URL'] %>
