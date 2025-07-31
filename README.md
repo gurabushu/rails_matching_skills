@@ -24,34 +24,61 @@ https://rails-match-apply-new-ac372e443c7c.herokuapp.com/
 ネーミング：隙間にマッチする。スキルにマッチする。そして好きにマッチするの意もあり。
 
 ６。機能
+
 ホーム画面
+
 ・リアルタイムのマッチング/月別マッチング数/マッチング成立率
+
 ・スキル一覧
+
 ・ログインフォーム/新規登録/ゲストユーザー
+
 ・スキル絞り込み検索バー
+
 取引画面
+
 ・チャット、ファイル送信機能
+
 ・スキル交換提案フォーム
+
 アカウント情報
+
 ・プロフィール編集
+
 ・設定password,email
+
 ・
 
 
 ７、主な技術
+
 フロントエンド
+
 ・HTML/CSS/Javascript/json
 
 バックエンド
+
 ・ルビー3.3.3
+
 ・Ruby on rails 8
-・puthon
+
+・python
+
 ・PostgreSQL
+
+・devise
+
+・ActiveStorage
+
+・RSpec
 
 
 インフラ・環境構築
+
 ・Git/Github
+
 ・Heroku
+
 
 ER図
 <img width="3756" height="2441" alt="er_diagram" src="https://github.com/user-attachments/assets/84447fbe-2c9b-4127-8027-74dbb2324ce0" />
@@ -59,9 +86,12 @@ ER図
 ９私の展望
 
 短期的な目標
+
 ・UI修正
 
+
 中期的な目標
+
 ・ユーザー同士が対等に取引できるように仕様を追加する
 
 
