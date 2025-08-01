@@ -49,13 +49,14 @@ https://rails-match-apply-new-ac372e443c7c.herokuapp.com/
 
 ・スキル交換提案フォーム
 
+・いいね承諾
+
 アカウント情報
 
-・プロフィール編集
+・プロフィール編集：名前、自己紹介、スキル
 
-・設定password,email
+・アカウント設定：password,email
 
-・
 
 
 ７、主な技術
