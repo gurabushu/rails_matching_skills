@@ -9,7 +9,6 @@ let compatibilityCache = new Map();
 window.showCompatibilityScore = function(button, userId) {
   const section = button.closest('.ai-compatibility-section');
   const scoreElement = section.querySelector('.compatibility-score');
-  const userCard = button.closest('.user-card');
   
   // ボタンを無効化
   button.disabled = true;
@@ -17,12 +16,6 @@ window.showCompatibilityScore = function(button, userId) {
   
   // スコア表示エリアを表示
   scoreElement.style.display = 'block';
-  
-  // ユーザーカードのオーバーフローを確実にvisibleに設定
-  if (userCard) {
-    userCard.style.overflow = 'visible';
-    userCard.style.zIndex = '1';
-  }
   
   // キャッシュから取得を試行
   if (compatibilityCache.has(userId)) {

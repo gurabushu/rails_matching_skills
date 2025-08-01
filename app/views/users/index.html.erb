@@ -408,9 +408,9 @@
 
 /* プルダウンメニューの表示/非表示 */
 .user-dropdown-menu {
-  position: fixed !important;
-  top: auto !important;
-  right: auto !important;
+  position: absolute !important;
+  top: calc(100% + 10px) !important;
+  right: 0 !important;
   background: white;
   border-radius: 12px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
@@ -419,8 +419,9 @@
   visibility: hidden;
   transform: translateY(-10px);
   transition: all 0.3s ease;
-  z-index: 99999 !important;
+  z-index: 999999 !important;
   border: 1px solid rgba(0, 0, 0, 0.1);
+  pointer-events: none;
 }
 
 /* ホバー時にメニューを表示 */
@@ -428,6 +429,7 @@
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+  pointer-events: all;
 }
 
 .user-dropdown:hover .dropdown-arrow {
@@ -593,19 +595,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const dropdownMenu = userDropdown.querySelector('.user-dropdown-menu');
     
     if (menuButton && dropdownMenu) {
-      // マウスオーバー時の位置計算とエフェクト
+      // マウスオーバー時の追加エフェクト（位置計算は削除）
       userDropdown.addEventListener('mouseenter', function() {
         console.log('User dropdown hovered');
-        
-        // ボタンの位置を取得
-        const buttonRect = menuButton.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-        
-        // ドロップダウンメニューの位置を設定
-        dropdownMenu.style.top = (buttonRect.bottom + scrollTop + 10) + 'px';
-        dropdownMenu.style.left = (buttonRect.right + scrollLeft - 220) + 'px'; // 右端から220px左に
-        
         menuButton.style.transform = 'translateY(-2px) scale(1.05)';
       });
       

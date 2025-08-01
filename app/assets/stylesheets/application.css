@@ -886,7 +886,7 @@ h2 {
   border: 1px solid #e1e5e9;
   background: linear-gradient(135deg, #f8f9fa, #ffffff);
   position: relative;
-  z-index: 1 !important;
+  z-index: -1 !important;
 }
 
 .compatibility-header {
