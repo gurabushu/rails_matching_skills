@@ -1,5 +1,5 @@
 <% unless user_signed_in? %>
-  <h1>新定番！スキルマッチングのプラットフォーム</h1>
+  <h1>スキマッチ 新定番！スキルマッチングのプラットフォーム</h1>
 
   <div class="title-description">
     <p>双方の必要なスキルをマッチング</br>
@@ -42,6 +42,10 @@
         <div class="stat-number" id="success-rate-landing">-%</div>
         <div class="stat-label">取引成功率</div>
       </div>
+      <div class="stat-card">
+        <div class="stat-number" id="popular-skill-landing">-</div>
+        <div class="stat-label">最人気スキル</div>
+      </div>
     </div>
     
     <div class="charts-container">
@@ -58,6 +62,13 @@
           <img src="/monthly_trend_chart.png" alt="月別マッチング推移" class="chart-image" loading="lazy">
         </div>
       <% end %>
+      
+      <% if File.exist?(Rails.root.join('public', 'popular_skills_chart.png')) %>
+        <div class="chart-item">
+          <h3>人気スキルランキング</h3>
+          <img src="/popular_skills_chart.png" alt="人気スキルランキング" class="chart-image" loading="lazy">
+        </div>
+      <% end %>
     </div>
   </div>
 <% end %>
@@ -72,6 +83,36 @@
       <%= button_to "ゲストログイン", users_guest_sign_in_path, method: :post, 
                     class: "btn btn-info",
                     form: { style: "display: inline-block;" } %>
+    </div>
+  </div>
+<% else %>
+  <!-- ログイン後のユーザーナビゲーション -->
+  <div class="user-navigation">
+    <div class="user-welcome">
+      <p>こんにちは、<strong><%= current_user.name || current_user.email %></strong>さん</p>
+    </div>
+    
+    <div class="user-menu-container">
+      <div class="user-dropdown">
+        <button class="user-menu-button" type="button">
+          <span class="user-avatar">👤</span>
+          <span class="user-name"><%= current_user.name || "ユーザー" %></span>
+          <span class="dropdown-arrow">▼</span>
+        </button>
+        
+        <div class="user-dropdown-menu">
+          <%= link_to "プロフィール編集", edit_user_registration_path, class: "dropdown-item" %>
+          <%= link_to "マイプロフィール", user_path(current_user), class: "dropdown-item" %>
+          <%= link_to "マッチング一覧", matches_path, class: "dropdown-item" %>
+          <%= link_to "チャット", chat_rooms_path, class: "dropdown-item" %>
+          <%= link_to "取引履歴", deals_path, class: "dropdown-item" %>
+          <div class="dropdown-divider"></div>
+          <%= button_to "ログアウト", destroy_user_session_path, 
+                        method: :delete, 
+                        class: "dropdown-item logout-btn",
+                        data: { confirm: "ログアウトしますか？" } %>
+        </div>
+      </div>
     </div>
   </div>
 <% end %>
@@ -100,9 +141,7 @@
                       @available_skills.map { |skill| [skill, skill] }, 
                       params[:skill_filter]),
                       {}, 
-                      { class: "skill-filter", 
-                        data: { action: "change->search#submitForm" },
-                        onchange: "this.form.submit();" } %>
+                      { class: "skill-filter hover-dropdown" } %>
         </div>
         
         <div class="sort-field">
@@ -114,9 +153,7 @@
                         ['スキル順', 'skill']
                       ], params[:sort]),
                       {}, 
-                      { class: "sort-select", 
-                        data: { action: "change->search#submitForm" },
-                        onchange: "this.form.submit();" } %>
+                      { class: "sort-select hover-dropdown" } %>
         </div>
         
         <div class="search-buttons">
@@ -217,42 +254,320 @@
   <% end %>
 </section>
 
-<!-- プルダウンメニュー用のJavaScript -->
+<!-- プルダウンメニュー用のCSS・JavaScript -->
+<style>
+/* ログイン後のユーザーナビゲーション */
+.user-navigation {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.user-welcome p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* ユーザードロップダウンメニュー */
+.user-menu-container {
+  position: relative;
+}
+
+.user-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.user-menu-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 25px;
+  color: white;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.user-menu-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+.user-avatar {
+  font-size: 18px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 8px;
+  border-radius: 50%;
+}
+
+.user-name {
+  font-weight: 500;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown-arrow {
+  transition: transform 0.3s ease;
+  font-size: 12px;
+}
+
+/* プルダウンメニューの表示/非表示 */
+.user-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  min-width: 220px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* ホバー時にメニューを表示 */
+.user-dropdown:hover .user-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.user-dropdown:hover .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+/* メニューアイテムのスタイル */
+.dropdown-item {
+  display: block;
+  padding: 12px 18px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: #f8f9fa;
+  color: #007bff;
+  transform: translateX(5px);
+}
+
+.dropdown-item:first-child {
+  border-radius: 12px 12px 0 0;
+}
+
+.dropdown-item:last-child {
+  border-radius: 0 0 12px 12px;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: #e9ecef;
+  margin: 8px 0;
+}
+
+.logout-btn {
+  color: #dc3545 !important;
+  font-weight: 500;
+}
+
+.logout-btn:hover {
+  background: rgba(220, 53, 69, 0.1) !important;
+  color: #dc3545 !important;
+}
+
+/* ホバー対応プルダウンメニューのスタイル */
+.hover-dropdown {
+  position: relative;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 10px 35px 10px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 10px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+}
+
+.hover-dropdown:hover {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.hover-dropdown:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+/* プルダウン選択時のエフェクト */
+.hover-dropdown option {
+  padding: 10px;
+  background: white;
+  color: #333;
+}
+
+.hover-dropdown option:hover {
+  background: #f8f9fa;
+}
+
+/* フィールドコンテナのホバーエフェクト */
+.filter-field, .sort-field {
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.filter-field:hover, .sort-field:hover {
+  transform: translateY(-1px);
+}
+
+/* ホバー時の視覚的フィードバック */
+.filter-field:hover .hover-dropdown,
+.sort-field:hover .hover-dropdown {
+  border-color: #28a745;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.15);
+}
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('DOM loaded, setting up select event listeners');
+  console.log('DOM loaded, setting up hover dropdown event listeners');
   
-  // スキルフィルターのプルダウン
+  // ユーザードロップダウンメニューの設定
+  const userDropdown = document.querySelector('.user-dropdown');
+  if (userDropdown) {
+    console.log('User dropdown found');
+    
+    const menuButton = userDropdown.querySelector('.user-menu-button');
+    const dropdownMenu = userDropdown.querySelector('.user-dropdown-menu');
+    
+    if (menuButton && dropdownMenu) {
+      // マウスオーバー時の追加エフェクト
+      userDropdown.addEventListener('mouseenter', function() {
+        console.log('User dropdown hovered');
+        menuButton.style.transform = 'translateY(-2px) scale(1.05)';
+      });
+      
+      userDropdown.addEventListener('mouseleave', function() {
+        console.log('User dropdown mouse left');
+        menuButton.style.transform = 'translateY(0) scale(1)';
+      });
+      
+      // クリック以外の場所をクリックしたときにメニューを閉じる
+      document.addEventListener('click', function(event) {
+        if (!userDropdown.contains(event.target)) {
+          dropdownMenu.style.opacity = '0';
+          dropdownMenu.style.visibility = 'hidden';
+          dropdownMenu.style.transform = 'translateY(-10px)';
+        }
+      });
+    }
+  }
+  
+  // スキルフィルターのプルダウン（選択時に送信）
   const skillFilter = document.querySelector('.skill-filter');
   if (skillFilter) {
     console.log('Skill filter found');
     skillFilter.addEventListener('change', function() {
       console.log('Skill filter changed to:', this.value);
-      this.form.submit();
+      // 少し遅延を入れてユーザビリティを向上
+      setTimeout(() => {
+        this.form.submit();
+      }, 300);
+    });
+    
+    // ホバー時の視覚的フィードバック
+    skillFilter.addEventListener('mouseenter', function() {
+      this.style.cursor = 'pointer';
     });
   }
   
-  // ソートのプルダウン
+  // ソートのプルダウン（選択時に送信）
   const sortSelect = document.querySelector('.sort-select');
   if (sortSelect) {
     console.log('Sort select found');
     sortSelect.addEventListener('change', function() {
       console.log('Sort changed to:', this.value);
-      this.form.submit();
+      // 少し遅延を入れてユーザビリティを向上
+      setTimeout(() => {
+        this.form.submit();
+      }, 300);
+    });
+    
+    // ホバー時の視覚的フィードバック
+    sortSelect.addEventListener('mouseenter', function() {
+      this.style.cursor = 'pointer';
     });
   }
 });
 
 // Turbo対応
 document.addEventListener('turbo:load', function() {
-  console.log('Turbo loaded, re-setting up select event listeners');
+  console.log('Turbo loaded, re-setting up hover dropdown event listeners');
+  
+  // ユーザードロップダウンの再設定
+  const userDropdown = document.querySelector('.user-dropdown');
+  if (userDropdown && !userDropdown.dataset.listenerAdded) {
+    const menuButton = userDropdown.querySelector('.user-menu-button');
+    const dropdownMenu = userDropdown.querySelector('.user-dropdown-menu');
+    
+    if (menuButton && dropdownMenu) {
+      userDropdown.addEventListener('mouseenter', function() {
+        menuButton.style.transform = 'translateY(-2px) scale(1.05)';
+      });
+      
+      userDropdown.addEventListener('mouseleave', function() {
+        menuButton.style.transform = 'translateY(0) scale(1)';
+      });
+      
+      userDropdown.dataset.listenerAdded = 'true';
+    }
+  }
   
   const skillFilter = document.querySelector('.skill-filter');
   if (skillFilter && !skillFilter.dataset.listenerAdded) {
     skillFilter.addEventListener('change', function() {
       console.log('Skill filter changed (turbo):', this.value);
-      this.form.submit();
+      setTimeout(() => {
+        this.form.submit();
+      }, 300);
     });
+    
+    skillFilter.addEventListener('mouseenter', function() {
+      this.style.cursor = 'pointer';
+    });
+    
     skillFilter.dataset.listenerAdded = 'true';
   }
   
@@ -260,9 +575,51 @@ document.addEventListener('turbo:load', function() {
   if (sortSelect && !sortSelect.dataset.listenerAdded) {
     sortSelect.addEventListener('change', function() {
       console.log('Sort changed (turbo):', this.value);
-      this.form.submit();
+      setTimeout(() => {
+        this.form.submit();
+      }, 300);
     });
+    
+    sortSelect.addEventListener('mouseenter', function() {
+      this.style.cursor = 'pointer';
+    });
+    
     sortSelect.dataset.listenerAdded = 'true';
   }
 });
+</script>
+
+<!-- 統計データ読み込み用JavaScript -->
+<script>
+async function loadStats() {
+  try {
+    const response = await fetch('/match_stats.json');
+    if (response.ok) {
+      const stats = await response.json();
+      
+      // 統計データを表示
+      document.getElementById('total-users-landing').textContent = stats.total_users || '-';
+      document.getElementById('match-rate-landing').textContent = (stats.match_rate || 0) + '%';
+      document.getElementById('total-matches-landing').textContent = stats.total_matches || '-';
+      document.getElementById('success-rate-landing').textContent = (stats.success_rate || 0) + '%';
+      
+      // 人気スキルを表示（最も人気のスキル）
+      if (stats.popular_skills && stats.popular_skills.length > 0) {
+        document.getElementById('popular-skill-landing').textContent = stats.popular_skills[0].skill;
+      } else {
+        document.getElementById('popular-skill-landing').textContent = '-';
+      }
+      
+      console.log('Statistics loaded successfully');
+    } else {
+      console.log('Statistics file not found, using default values');
+    }
+  } catch (error) {
+    console.log('Error loading statistics:', error);
+  }
+}
+
+// ページ読み込み時に統計データを読み込む
+document.addEventListener('DOMContentLoaded', loadStats);
+document.addEventListener('turbo:load', loadStats);
 </script>

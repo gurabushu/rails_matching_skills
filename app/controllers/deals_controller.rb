@@ -13,6 +13,8 @@ class DealsController < ApplicationController
 
   def new
     @deal = @match.deals.build
+    # マッチの相手ユーザーを設定
+    @user = @match.user == current_user ? @match.target_user : @match.user
   end
 
   def create
@@ -20,6 +22,7 @@ class DealsController < ApplicationController
     @deal.client = current_user
     # マッチの相手を取得
     @deal.freelancer = @match.user == current_user ? @match.target_user : @match.user
+    @user = @deal.freelancer  # ビューで使用するための変数
     @deal.status = Deal::STATUSES['pending']
     
     if @deal.save

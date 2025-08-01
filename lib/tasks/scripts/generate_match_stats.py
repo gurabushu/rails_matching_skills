@@ -50,7 +50,19 @@ def get_match_statistics():
     
     try:
         cursor = conn.cursor()
-        
+
+        # 人気スキルの取得（usersテーブルから直接取得）
+        cursor.execute("""
+            SELECT skill, COUNT(*) as count
+            FROM users 
+            WHERE skill IS NOT NULL AND skill != '' AND email != 'guest@example.com'
+            GROUP BY skill
+            ORDER BY count DESC
+            LIMIT 5
+        """)
+        popular_skills = cursor.fetchall()
+        print(f"Popular skills found: {popular_skills}")
+
         # 総ユーザー数
         cursor.execute("SELECT COUNT(*) FROM users WHERE email != 'guest@example.com'")
         total_users = cursor.fetchone()[0]
@@ -105,7 +117,8 @@ def get_match_statistics():
             'active_deals': active_deals,
             'completed_deals': completed_deals,
             'success_rate': success_rate,
-            'monthly_matches': monthly_matches
+            'monthly_matches': monthly_matches,
+            'popular_skills': popular_skills
         }
         
     except sqlite3.Error as e:
@@ -242,6 +255,68 @@ def generate_monthly_trend_chart(stats):
     
     return True
 
+def generate_popular_skills_chart(stats):
+    """人気スキルの横棒グラフを生成"""
+    if not stats or not stats['popular_skills']:
+        print("No popular skills data available")
+        return False
+    
+    # データ準備
+    skills = []
+    counts = []
+    
+    for skill, count in stats['popular_skills']:
+        skills.append(skill)
+        counts.append(count)
+    
+    if not skills:
+        print("No skills found")
+        return False
+    
+    # グラフ作成
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    # 色のグラデーション
+    colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57']
+    bars = ax.barh(skills, counts, color=colors[:len(skills)])
+    
+    # データラベル追加
+    for i, (bar, count) in enumerate(zip(bars, counts)):
+        width = bar.get_width()
+        ax.text(width + 0.1, bar.get_y() + bar.get_height()/2.,
+               f'{int(count)}人',
+               ha='left', va='center', fontweight='bold')
+    
+    ax.set_title('人気スキルランキング', fontsize=16, fontweight='bold', pad=20)
+    ax.set_xlabel('ユーザー数', fontsize=12)
+    ax.set_ylabel('スキル', fontsize=12)
+    ax.grid(True, alpha=0.3, axis='x')
+    
+    # レイアウト調整
+    plt.tight_layout()
+    
+    # 保存パスを絶対パスで指定
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    output_path = os.path.join(script_dir, '..', '..', '..', 'app', 'assets', 'images', 'popular_skills_chart.png')
+    output_path = os.path.abspath(output_path)
+    
+    # publicディレクトリにもコピー
+    public_path = os.path.join(script_dir, '..', '..', '..', 'public', 'popular_skills_chart.png')
+    public_path = os.path.abspath(public_path)
+    
+    # ディレクトリが存在しない場合は作成
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    os.makedirs(os.path.dirname(public_path), exist_ok=True)
+    
+    print(f"Saving popular skills chart to: {output_path}")
+    plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white')
+    
+    print(f"Copying popular skills chart to: {public_path}")
+    plt.savefig(public_path, dpi=300, bbox_inches='tight', facecolor='white')
+    plt.close()
+    
+    return True
+
 def main():
     """メイン処理"""
     print("マッチング統計グラフを生成中...")
@@ -255,9 +330,15 @@ def main():
     # グラフ生成
     success1 = generate_match_rate_chart(stats)
     success2 = generate_monthly_trend_chart(stats)
+    success3 = generate_popular_skills_chart(stats)
     
-    if success1 and success2:
-        print("グラフの生成が完了しました")
+    if success1 and success2 and success3:
+        print("すべてのグラフの生成が完了しました")
+        
+        # 人気スキルデータを整形
+        popular_skills_data = []
+        for skill, count in stats['popular_skills']:
+            popular_skills_data.append({'skill': skill, 'count': count})
         
         # 統計データをJSONで出力
         stats_json = {
@@ -265,6 +346,7 @@ def main():
             'match_rate': round(stats['match_rate'], 1),
             'total_matches': stats['total_matches'],
             'success_rate': round(stats['success_rate'], 1),
+            'popular_skills': popular_skills_data,
             'generated_at': datetime.now().isoformat()
         }
         

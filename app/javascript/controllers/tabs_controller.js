@@ -3,15 +3,28 @@ import { Controller } from "@hotwired/stimulus"
 // Connects to data-controller="tabs"
 export default class extends Controller {
   static targets = ["tab", "content"]
+  static values = { defaultTab: String }
   
   connect() {
-    // 初期化時に最初のタブをアクティブにする
-    this.showTab('matched')
+    // デフォルトタブまたは最初のタブをアクティブにする
+    const defaultTab = this.hasDefaultTabValue ? this.defaultTabValue : 'matched'
+    
+    // URLのハッシュからタブを決定
+    const hash = window.location.hash.replace('#', '')
+    const targetTab = hash || defaultTab
+    
+    this.showTab(targetTab)
   }
   
   switch(event) {
+    event.preventDefault()
     const tabName = event.currentTarget.dataset.tab
     this.showTab(tabName)
+    
+    // URLハッシュを更新（任意）
+    if (history.replaceState) {
+      history.replaceState(null, null, `#${tabName}`)
+    }
   }
   
   showTab(tabName) {
