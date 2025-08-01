@@ -9,6 +9,7 @@ class User < ApplicationRecord
   validates :description, length: { maximum: 300 }
   validates :name, presence: true, length: { maximum: 50 }, unless: :guest_user?
   validates :skill, presence: true, length: { maximum: 50 }, unless: :guest_user?
+  validates :github, format: { with: /\Ahttps:\/\/github\.com\/[\w\-\.]+\z/, message: "はGitHubのURLの形式で入力してください（例：https://github.com/username）" }, allow_blank: true
 
   # マッチング関連のアソシエーション
   has_many :sent_matches, class_name: 'Match', foreign_key: 'user_id', dependent: :destroy

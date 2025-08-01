@@ -37,6 +37,13 @@
         <small class="form-help">最大300文字まで入力できます</small>
       </div>
 
+      <div class="form-group">
+        <%= form.label :github, "GitHub URL", class: "form-label" %>
+        <%= form.url_field :github, class: "form-control", 
+                          placeholder: "https://github.com/username" %>
+        <small class="form-help">GitHubプロフィールのURLを入力してください（任意）</small>
+      </div>
+
       <div class="form-actions">
         <%= form.submit "プロフィールを更新", class: "btn btn-primary" %>
         <%= link_to "キャンセル", user_path(@user), class: "btn btn-outline" %>

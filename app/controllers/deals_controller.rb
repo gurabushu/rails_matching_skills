@@ -1,18 +1,11 @@
 class DealsController < ApplicationController
-  before  def start
-    if @deal.can_start? && @deal.client == current_user
-      @deal.update!(status: Deal::STATUSES['in_progress'])
-      redirect_to @deal, notice: 'つながりを開始しました。'
-    else
-      redirect_to @deal, alert: 'つながりを開始できませんでした。'
-    end
-  end:authenticate_user!
+  before_action :authenticate_user!
   before_action :set_deal, only: [:show, :edit, :update, :accept, :start, :complete, :cancel]
   before_action :set_match, only: [:new, :create]
   
   def index
-    @requested_deals = current_user.client_deals.includes(:match, :freelancer)
-    @received_deals = current_user.freelancer_deals.includes(:match, :client)
+    @client_deals = current_user.client_deals.includes(:match, :freelancer)
+    @freelancer_deals = current_user.freelancer_deals.includes(:match, :client)
   end
 
   def show

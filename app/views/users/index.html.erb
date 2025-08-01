@@ -1,17 +1,17 @@
 <% unless user_signed_in? %>
-  <h1>DevConnect - エンジニア同士の横のつながりを作るマッチングアプリ</h1>
-
-  <div class="hero-description">
-    <p>🤝 <strong>同じ技術に興味を持つエンジニア仲間と出会おう</strong></p>
+ <div class="hero-description">
+  <h1>TecConnect - エンジニア同士がスキルや趣味で繋がれるマッチングサービス</h1>
+ 
+    <p><strong>同じ技術に興味を持つエンジニア仲間と出会おう</strong></p>
     <p>技術的な話ができる仲間、一緒に勉強会に参加する仲間、<br>
       新しいプロジェクトを始める仲間を見つけられるプラットフォームです</p>
     <div class="tech-highlights">
-      <span class="connect-tag">👨‍💻 エンジニア仲間</span>
-      <span class="connect-tag">💬 技術談話</span>
-      <span class="connect-tag">📚 一緒に学習</span>
-      <span class="connect-tag">🚀 プロジェクト仲間</span>
-      <span class="connect-tag">☕ カフェ会</span>
-      <span class="connect-tag">🎯 勉強会仲間</span>
+      <span class="connect-tag">エンジニア仲間</span>
+      <span class="connect-tag">技術談話</span>
+      <span class="connect-tag">一緒に学習</span>
+      <span class="connect-tag">プロジェクト仲間</span>
+      <span class="connect-tag">カフェ会</span>
+      <span class="connect-tag">勉強会仲間</span>
     </div>
   </div>
 <% end %>
@@ -19,7 +19,7 @@
 <!-- ナビゲーション -->
 <% unless user_signed_in? %>
   <div class="navigation">
-    <p>🚀 技術スキルを共有し、エンジニア仲間とのネットワークを広げよう</p>
+    <p>技術スキルを共有し、エンジニア仲間とのネットワークを広げよう</p>
     <div class="auth-actions">
       <%= link_to "ログイン", new_user_session_path, class: "btn btn-primary" %>
       <%= link_to "新規登録", new_user_registration_path, class: "btn btn-success" %>
@@ -38,7 +38,7 @@
     <div class="user-menu-container">
       <div class="user-dropdown">
         <button class="user-menu-button" type="button">
-          <span class="user-avatar">👤</span>
+          <span class="user-avatar"></span>
           <span class="user-name"><%= current_user.name || "エンジニア" %></span>
           <span class="dropdown-arrow">▼</span>
         </button>
@@ -48,7 +48,6 @@
           <%= link_to "マイプロフィール", user_path(current_user), class: "dropdown-item" %>
           <%= link_to "マッチング一覧", matches_path, class: "dropdown-item" %>
           <%= link_to "チャット", chat_rooms_path, class: "dropdown-item" %>
-          <%= link_to "つながり履歴", deals_path, class: "dropdown-item" %>
           <div class="dropdown-divider"></div>
           <%= button_to "ログアウト", destroy_user_session_path, 
                         method: :delete, 
@@ -62,7 +61,7 @@
 
 <!-- ユーザー一覧 -->
 <section class="users-list">
-  <h2>👨‍💻 エンジニア仲間を見つけよう</h2>
+  <h2>繋がれるユーザー一覧</h2>
   
   <!-- 検索・フィルターフォーム -->
   <div class="search-section">
