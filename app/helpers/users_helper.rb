@@ -47,23 +47,4 @@ module UsersHelper
       '要改善'
     end
   end
-    else
-      'compatibility-low'
-    end
-  end
-  
-  def compatibility_text(score)
-    return '分析中' if score.nil?
-    
-    case score
-    when 80..100
-      '非常に良い'
-    when 60..79
-      '良い'
-    when 40..59
-      '普通'
-    else
-      '要改善'
-    end
-  end
 end
