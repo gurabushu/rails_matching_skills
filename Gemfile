@@ -1,5 +1,7 @@
 source "https://rubygems.org"
 
+ruby "3.3.3"
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.2"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
@@ -34,6 +36,9 @@ gem "solid_cable"
 # open weather API
 gem 'dotenv-rails'
 
+# OpenAI API for AI matching features
+gem 'ruby-openai'
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
@@ -61,6 +66,9 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+  
+  # ER diagram generation
+  gem "rails-erd", require: false
 end
 
 group :development do

@@ -9,9 +9,13 @@ Rails.application.routes.draw do
   
   # マッチング機能
   resources :matches, only: [:index, :create, :destroy] do
+    collection do
+      get :ai_suggestions
+    end
     member do
       patch :accept
       patch :reject
+      post :compatibility_check
     end
   end
   
