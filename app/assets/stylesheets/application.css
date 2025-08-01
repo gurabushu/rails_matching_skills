@@ -842,6 +842,41 @@ h2 {
 }
 
 /* AI相性診断スタイル */
+.ai-compatibility-section {
+  margin: 12px 0;
+}
+
+.btn-ai-diagnose {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+}
+
+.btn-ai-diagnose:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+}
+
+.btn-ai-diagnose:active {
+  transform: translateY(0);
+}
+
+.btn-ai-diagnose .ai-icon {
+  font-size: 14px;
+}
+
 .compatibility-score {
   margin: 12px 0;
   padding: 10px;
@@ -888,6 +923,12 @@ h2 {
 .score-loading {
   font-size: 12px;
   color: #6c757d;
+  font-style: italic;
+}
+
+.score-error {
+  font-size: 12px;
+  color: #dc3545;
   font-style: italic;
 }
 

@@ -5,17 +5,25 @@ module UsersHelper
     # キャッシュキーを作成（ユーザーペアを一意に識別）
     cache_key = "compatibility_#{[current_user.id, user.id].sort.join('_')}"
     
-    # キャッシュから取得を試行（1時間有効）
-    Rails.cache.fetch(cache_key, expires_in: 1.hour) do
+    # キャッシュから取得を試行（24時間有効）
+    Rails.cache.fetch(cache_key, expires_in: 24.hours) do
       begin
         ai_service = AiMatchingService.new
         compatibility = ai_service.calculate_compatibility(current_user, user)
         compatibility[:score]
       rescue => e
         Rails.logger.error "Compatibility calculation failed: #{e.message}"
-        nil
+        # エラー時は50%のデフォルトスコアをキャッシュ
+        50
       end
     end
+  end
+  
+  def get_cached_compatibility_score(user)
+    return nil unless user_signed_in? && user != current_user
+    
+    cache_key = "compatibility_#{[current_user.id, user.id].sort.join('_')}"
+    Rails.cache.read(cache_key)
   end
   
   def compatibility_color_class(score)

@@ -83,7 +83,27 @@ class MatchesController < ApplicationController
   # 相性診断
   def compatibility_check
     target_user = User.find(params[:user_id])
-    compatibility = AiMatchingService.new.calculate_compatibility(current_user, target_user)
+    
+    # キャッシュキーを作成
+    cache_key = "compatibility_#{[current_user.id, target_user.id].sort.join('_')}"
+    
+    # キャッシュから取得を試行（24時間有効）
+    compatibility = Rails.cache.fetch(cache_key, expires_in: 24.hours) do
+      begin
+        ai_service = AiMatchingService.new
+        ai_service.calculate_compatibility(current_user, target_user)
+      rescue => e
+        Rails.logger.error "AI Compatibility check error: #{e.message}"
+        # デフォルト値を返す
+        {
+          score: 50,
+          reasons: ['AI分析に失敗しました'],
+          collaboration_potential: '後ほど再度お試しください',
+          skill_synergy: '分析中です',
+          growth_opportunities: '分析中です'
+        }
+      end
+    end
     
     render json: {
       compatibility_score: compatibility[:score],

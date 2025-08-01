@@ -160,13 +160,20 @@
           
           <!-- AI相性診断 -->
           <% if user_signed_in? && user != current_user %>
-            <div class="compatibility-score compatibility-unknown">
-              <div class="compatibility-header">
+            <div class="ai-compatibility-section" data-user-id="<%= user.id %>">
+              <button class="btn btn-ai-diagnose" onclick="showCompatibilityScore(this, <%= user.id %>)">
                 <i class="ai-icon">🤖</i>
-                <span class="compatibility-label">AI相性診断</span>
-              </div>
-              <div class="compatibility-details">
-                <span class="score-loading">分析中...</span>
+                AI診断を見る
+              </button>
+              
+              <div class="compatibility-score compatibility-unknown" style="display: none;">
+                <div class="compatibility-header">
+                  <i class="ai-icon">🤖</i>
+                  <span class="compatibility-label">AI相性診断結果</span>
+                </div>
+                <div class="compatibility-details">
+                  <span class="score-loading">分析中...</span>
+                </div>
               </div>
             </div>
           <% end %>
