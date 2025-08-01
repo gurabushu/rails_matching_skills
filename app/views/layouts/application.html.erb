@@ -28,40 +28,7 @@
   </head>
 
   <body>
-    <% if user_signed_in? %>
-      <!-- 統計情報バー -->
-      <div class="stats-bar bg-light border-bottom">
-        <div class="container">
-          <div class="row py-2">
-            <div class="col-md-2 text-center">
-              <small class="text-muted">登録ユーザー</small>
-              <div class="fw-bold text-primary" id="total-users">-</div>
-            </div>
-            <div class="col-md-2 text-center">
-              <small class="text-muted">マッチ率</small>
-              <div class="fw-bold text-success" id="match-rate">-%</div>
-            </div>
-            <div class="col-md-2 text-center">
-              <small class="text-muted">総マッチ数</small>
-              <div class="fw-bold text-info" id="total-matches">-</div>
-            </div>
-            <div class="col-md-2 text-center">
-              <small class="text-muted">成功率</small>
-              <div class="fw-bold text-warning" id="success-rate">-%</div>
-            </div>
-            <div class="col-md-4 text-end d-flex align-items-center justify-content-end">
-              <%= button_to "📊 統計更新", generate_stats_path, 
-                          method: :post, 
-                          class: "btn btn-sm btn-outline-primary",
-                          title: "統計データを最新に更新",
-                          style: "border: none; background: transparent; font-size: 0.875rem;",
-                          data: { confirm: "統計データを更新しますか？" } %>
-            </div>
-          </div>
-        </div>
-      </div>
-    <% end %>
-
+   
     <!-- Flash Messages -->
     <% if notice %>
       <div class="alert alert-success alert-dismissible fade show" role="alert">
