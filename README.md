@@ -1,3 +1,4 @@
+
 スキマッチ - 新定番！お互いの得意を交換して、身近なそれぞれの問題解決アプリ
 
 １、サービス概要
@@ -5,7 +6,8 @@
 そんな時にスキマッチで、互いに自身のスキルをトレードし助け合う、完全無料のアプリ
 
 ２、サービズ画像
-<img width="3023" height="2039" alt="github_match_apply_img" src="https://github.com/user-attachments/assets/bb0d5a0a-b422-4a74-9ec5-f937afdff033" />
+<img width="1366" height="768" alt="github_img" src="https://github.com/user-attachments/assets/22def5ea-0336-49c0-8a4a-245159d9bd2f" />
+
 
 3、サービスURL
 https://rails-match-apply-new-ac372e443c7c.herokuapp.com/
