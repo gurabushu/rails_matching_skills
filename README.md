@@ -41,6 +41,8 @@ https://rails-match-apply-new-ac372e443c7c.herokuapp.com/
 
 ・いいね送信
 
+・AI相性診断
+
 
 ### プロフィール画面
 
@@ -75,6 +77,8 @@ https://rails-match-apply-new-ac372e443c7c.herokuapp.com/
 ・Ruby on rails 8
 
 ・PostgreSQL
+
+・OpenAI API
 
 ・devise
 
