@@ -19,7 +19,7 @@ class MatchesController < ApplicationController
       
       if match.persisted?
         if match.matched?
-          redirect_back(fallback_location: root_path, notice: "#{@target_user.name}さんとマッチしました！🎉")
+          redirect_back(fallback_location: root_path, notice: "#{@target_user.name}さんとマッチしました！")
         else
           redirect_back(fallback_location: root_path, notice: "#{@target_user.name}さんにいいねを送りました！")
         end
@@ -52,7 +52,7 @@ class MatchesController < ApplicationController
       # チャットルームを作成
       chat_room = @match.create_chat_room!
       
-      redirect_to matches_path, notice: "#{@match.user.name}さんとマッチしました！🎉"
+      redirect_to matches_path, notice: "#{@match.user.name}さんとマッチしました！"
     else
       redirect_to matches_path, alert: 'マッチの承認に失敗しました。'
     end

@@ -808,3 +808,35 @@ h2 {
   color: #2c3e50;
   margin: 0;
 }
+
+/* マッチページ用アバタースタイル */
+.match-user-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.match-avatar {
+  flex-shrink: 0;
+}
+
+.avatar-match {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e1e5e9;
+}
+
+.match-user-info {
+  flex: 1;
+}
+
+.match-user-info h3 {
+  margin: 0 0 6px 0;
+}
+
+.match-user-info p {
+  margin: 0;
+}

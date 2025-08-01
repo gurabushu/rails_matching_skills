@@ -38,7 +38,9 @@
     <div class="user-menu-container">
       <div class="user-dropdown">
         <button class="user-menu-button" type="button">
-          <span class="user-avatar"></span>
+          <span class="user-avatar">
+            <img src="<%= current_user.avatar_url(:nav) %>" alt="<%= current_user.name %>のアバター" class="nav-avatar">
+          </span>
           <span class="user-name"><%= current_user.name || "エンジニア" %></span>
           <span class="dropdown-arrow">▼</span>
         </button>
@@ -71,7 +73,7 @@
       <div class="search-row">
         <div class="search-field">
           <%= f.text_field :search, 
-                          placeholder: "名前、技術、専門分野から検索（一緒に学習したい技術など）...", 
+                          placeholder: "名前、技術、趣味などから検索（一緒に学習したい技術や共通の趣味）...", 
                           value: params[:search],
                           class: "search-input",
                           data: { search_target: "input", action: "keydown->search#submitOnEnter" } %>
@@ -129,21 +131,33 @@
     <div class="users-grid">
       <% @users.each do |user| %>
         <div class="user-card">
-          <% if user.name.present? %>
-            <h3><%= link_to user.name, user_path(user), class: "user-name-link" %></h3>
-          <% end %>
-          
-          <% if user.skill.present? %>
-            <p class="skill"><strong>スキル:</strong> <%= user.skill %></p>
-          <% else %>
-            <p class="skill no-skill"><strong>スキル:</strong> 未設定</p>
-          <% end %>
+          <div class="user-card-header">
+            <div class="user-avatar-small">
+              <img src="<%= user.avatar_url(:small) %>" alt="<%= user.name %>のアバター" class="avatar-small">
+            </div>
+            <div class="user-basic-info">
+              <% if user.name.present? %>
+                <h3><%= link_to user.name, user_path(user), class: "user-name-link" %></h3>
+              <% end %>
+              
+              <% if user.skill.present? %>
+                <p class="skill"><strong>スキル:</strong> <%= user.skill %></p>
+              <% else %>
+                <p class="skill no-skill"><strong>スキル:</strong> 未設定</p>
+              <% end %>
+            </div>
+          </div>
           
           <% if user.description.present? %>
             <p class="description"><%= truncate(user.description, length: 100) %></p>
           <% else %>
             <p class="description no-description">自己紹介未設定</p>
           <% end %>
+          
+          <% if user.hobbies.present? %>
+            <p class="hobbies"><strong>趣味:</strong> <%= truncate(user.hobbies, length: 80) %></p>
+          <% end %>
+          
           <p class="created-at">登録日: <%= user.created_at.strftime("%Y年%m月%d日") %></p>
           
           <div class="user-actions">
@@ -167,10 +181,10 @@
                               data: { confirm: "つながり申請を取り消しますか？" } %>
                 <% when :received_pending %>
                   <span class="match-status received">
-                    つながり申請が届いています🤝
+                    つながり申請が届いています
                   </span>
                 <% else %>
-                  <%= button_to "🤝 つながる", create_match_path(user), 
+                  <%= button_to "つながる", create_match_path(user), 
                               method: :post, 
                               class: "btn btn-primary btn-sm match-btn" %>
                 <% end %>
@@ -502,6 +516,47 @@
 .sort-field:hover .hover-dropdown {
   border-color: #28a745;
   box-shadow: 0 4px 12px rgba(40, 167, 69, 0.15);
+}
+
+/* ユーザーカードのアバター表示スタイル */
+.user-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.user-avatar-small {
+  flex-shrink: 0;
+}
+
+.avatar-small {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e1e5e9;
+}
+
+.user-basic-info {
+  flex: 1;
+}
+
+.user-basic-info h3 {
+  margin: 0 0 6px 0;
+}
+
+.user-basic-info .skill {
+  margin: 0;
+}
+
+/* ナビゲーション用アバタースタイル */
+.nav-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
 }
 </style>
 
