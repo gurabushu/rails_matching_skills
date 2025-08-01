@@ -1,18 +1,17 @@
 <div class="matches-container" data-controller="tabs">
   <div class="page-header">
-    <h1>マッチング管理</h1>
+    <h1>🤝 エンジニア同士のつながり管理</h1>
     <div class="nav-links">
-      <%= link_to "← スキル一覧", root_path, class: "btn btn-secondary" %>
-      <%= link_to "チャット", chat_rooms_path, class: "btn btn-outline" %>
-      <%= link_to "スキル交換", deals_path, class: "btn btn-outline" %>
+      <%= link_to "← エンジニア一覧", root_path, class: "btn btn-secondary" %>
+      <%= link_to "💬 チャット", chat_rooms_path, class: "btn btn-outline" %>
     </div>
   </div>
   
   <!-- タブメニュー -->
   <div class="match-tabs">
-    <button class="tab-btn active" data-tab="matched" data-action="click->tabs#switch">マッチ済み</button>
-    <button class="tab-btn" data-tab="received" data-action="click->tabs#switch">受信済み</button>
-    <button class="tab-btn" data-tab="sent" data-action="click->tabs#switch">送信済み</button>
+    <button class="tab-btn active" data-tab="matched" data-action="click->tabs#switch">🎯 マッチ済みエンジニア</button>
+    <button class="tab-btn" data-tab="received" data-action="click->tabs#switch">📨 受信したリクエスト</button>
+    <button class="tab-btn" data-tab="sent" data-action="click->tabs#switch">📤 送信したリクエスト</button>
   </div>
   
   <!-- マッチ済みユーザー -->
@@ -21,7 +20,6 @@
       <h2>💕 マッチしたユーザー (<%= @matched_users.count %>)</h2>
       <div class="quick-nav">
         <%= link_to "チャット一覧", chat_rooms_path, class: "btn btn-outline btn-sm" %>
-        <%= link_to "取引一覧", deals_path, class: "btn btn-outline btn-sm" %>
       </div>
     </div>
     <% if @matched_users.any? %>
@@ -45,7 +43,6 @@
               <% chat_room = user_match.chat_room || user_match.create_chat_room! %>
               <div class="match-actions">
                 <%= link_to "チャット", chat_room_path(chat_room), class: "btn btn-primary btn-sm" %>
-                <%= link_to "スキル交換提案", new_match_deal_path(user_match), class: "btn btn-success btn-sm" %>
               </div>
             <% else %>
               <div class="match-actions">

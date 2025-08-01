@@ -26,7 +26,7 @@ class DealsController < ApplicationController
     @deal.status = Deal::STATUSES['pending']
     
     if @deal.save
-      redirect_to @deal, notice: 'スキル交換を提案しました。'
+      redirect_to @deal, notice: 'つながりを提案しました。'
     else
       render :new, status: :unprocessable_entity
     end
@@ -37,7 +37,7 @@ class DealsController < ApplicationController
 
   def update
     if @deal.update(deal_params)
-      redirect_to @deal, notice: 'スキル交換を更新しました。'
+      redirect_to @deal, notice: 'つながりを更新しました。'
     else
       render :edit, status: :unprocessable_entity
     end
@@ -46,36 +46,36 @@ class DealsController < ApplicationController
   def accept
     if @deal.can_accept? && @deal.freelancer == current_user
       @deal.update!(status: Deal::STATUSES['accepted'])
-      redirect_to @deal, notice: 'スキル交換を受諾しました。'
+      redirect_to @deal, notice: 'つながりを受諾しました。'
     else
-      redirect_to @deal, alert: 'スキル交換を受諾できませんでした。'
+      redirect_to @deal, alert: 'つながりを受諾できませんでした。'
     end
   end
   
   def start
     if @deal.can_start? && @deal.client == current_user
       @deal.update!(status: Deal::STATUSES['in_progress'])
-      redirect_to @deal, notice: 'スキル交換を開始しました。'
+      redirect_to @deal, notice: 'つながりを開始しました。'
     else
-      redirect_to @deal, alert: 'スキル交換を開始できませんでした。'
+      redirect_to @deal, alert: 'つながりを開始できませんでした。'
     end
   end
   
   def complete
     if @deal.can_complete? && @deal.client == current_user
       @deal.update!(status: Deal::STATUSES['completed'])
-      redirect_to @deal, notice: 'スキル交換を完了しました。'
+      redirect_to @deal, notice: 'つながりを完了しました。'
     else
-      redirect_to @deal, alert: 'スキル交換を完了できませんでした。'
+      redirect_to @deal, alert: 'つながりを完了できませんでした。'
     end
   end
   
   def cancel
     if @deal.can_cancel?
       @deal.update!(status: Deal::STATUSES['cancelled'])
-      redirect_to @deal, notice: 'スキル交換をキャンセルしました。'
+      redirect_to @deal, notice: 'つながりをキャンセルしました。'
     else
-      redirect_to @deal, alert: 'スキル交換をキャンセルできませんでした。'
+      redirect_to @deal, alert: 'つながりをキャンセルできませんでした。'
     end
   end
   
@@ -86,7 +86,7 @@ class DealsController < ApplicationController
       match: { id: current_user.sent_matches.pluck(:id) + current_user.received_matches.pluck(:id) }
     ).find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    redirect_to deals_path, alert: 'スキル交換が見つかりません。'
+    redirect_to deals_path, alert: '技術スキル交換が見つかりません。'
   end
   
   def set_match
@@ -94,7 +94,7 @@ class DealsController < ApplicationController
     @match = Match.find(params[:match_id]) if params[:match_id]
     
     unless @match && match_ids.include?(@match.id)
-      redirect_to matches_path, alert: 'マッチしているユーザーとのみスキル交換を作成できます。'
+      redirect_to matches_path, alert: 'マッチしているエンジニアとのみ技術スキル交換を作成できます。'
     end
   end
   

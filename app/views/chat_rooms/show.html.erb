@@ -4,9 +4,6 @@
       ← 戻る
     <% end %>
     <h1><%= @chat_room.name %></h1>
-    <div class="chat-actions">
-      <%= link_to "スキル交換を提案", new_match_deal_path(@chat_room.match), class: "btn btn-primary btn-sm" %>
-    </div>
   </div>
 
   <div class="messages-container" id="messages">

@@ -1,15 +1,9 @@
 <div class="container">
   <div class="header">
-    <h1>スキル交換管理</h1>
-    <%= link_to "チャット", chat_rooms_path, class: "btn btn-outline" %>
-    <%= link_to "マッチング", matches_path, class: "btn btn-outline" %>
+        <h1>🤝 つながり履歴</h1>
+    <%= link_to "💬 チャット", chat_rooms_path, class: "btn btn-outline" %>
+    <%= link_to "🤝 マッチング", matches_path, class: "btn btn-outline" %>
   </div>
-
-  <div class="deals-tabs" data-controller="tabs" data-tabs-default-tab-value="client">
-    <div class="tab-buttons">
-      <button class="tab-btn active" data-tab="client" data-action="click->tabs#switch">提案した交換</button>
-      <button class="tab-btn" data-tab="freelancer" data-action="click->tabs#switch">依頼された交換</button>
-    </div>
 
     <div class="tab-content active" id="client-tab">
       <% if @client_deals.any? %>

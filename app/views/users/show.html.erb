@@ -2,7 +2,7 @@
   <div class="profile-container">
     <div class="profile-header">
       <%= link_to root_path, class: "back-btn" do %>
-        ← ユーザー一覧に戻る
+        ← エンジニア一覧に戻る
       <% end %>
       <h1><%= @user.name %>さんのプロフィール</h1>
     </div>
@@ -16,7 +16,7 @@
           </div>
           
           <div class="info-item">
-            <label>スキル</label>
+            <label>技術・興味分野</label>
             <span class="skill-tag"><%= @user.skill %></span>
           </div>
           
@@ -28,7 +28,16 @@
               </div>
             </div>
           <% end %>
-          
+
+          <% if @user.github.present? %>
+            <div class="info-item">
+              <label>GitHub</label>
+              <a href="<%= @user.github %>" target="_blank" rel="noopener noreferrer" class="github-link">
+                <i class="fab fa-github"></i> <%= @user.github %>
+              </a>
+            </div>
+          <% end %>
+
           <div class="info-item">
             <label>登録日</label>
             <span><%= @user.created_at.strftime("%Y年%m月%d日") %></span>
@@ -40,12 +49,12 @@
             <%= link_to "プロフィール編集", edit_user_path(@user), class: "btn btn-primary" %>
           <% elsif user_signed_in? && !current_user.guest_user? %>
             <% if current_user.sent_match_to?(@user) %>
-              <%= button_to "いいねを取り消す", destroy_match_path(@user), 
+              <%= button_to "つながり申請を取り消す", destroy_match_path(@user), 
                            method: :delete, 
                            class: "btn btn-outline-danger",
-                           data: { confirm: "いいねを取り消しますか？" } %>
+                           data: { confirm: "つながり申請を取り消しますか？" } %>
             <% else %>
-              <%= button_to "いいね", create_match_path(@user), 
+              <%= button_to "🤝 つながる", create_match_path(@user), 
                            method: :post, 
                            class: "btn btn-success" %>
             <% end %>
@@ -118,20 +127,39 @@
 }
 
 .skill-tag {
-  background: #4a90e2;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 6px 12px;
-  border-radius: 20px;
+  padding: 8px 16px;
+  border-radius: 25px;
   font-size: 14px;
   font-weight: 600;
   display: inline-block;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.github-link {
+  color: #333;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.github-link:hover {
+  background: #333;
+  color: white;
+  transform: translateY(-1px);
 }
 
 .description {
   background: #f8f9fa;
   padding: 15px;
   border-radius: 6px;
-  border-left: 4px solid #4a90e2;
+  border-left: 4px solid #667eea;
 }
 
 .profile-actions {
@@ -143,31 +171,38 @@
 .btn {
   padding: 12px 24px;
   border: none;
-  border-radius: 6px;
+  border-radius: 25px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
   display: inline-block;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .btn-primary {
-  background: #4a90e2;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 .btn-primary:hover {
-  background: #357abd;
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
 }
 
 .btn-success {
-  background: #28a745;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
   color: white;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
 }
 
 .btn-success:hover {
-  background: #218838;
+  background: linear-gradient(135deg, #218838 0%, #1a9d7a 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
 }
 
 .btn-outline-danger {

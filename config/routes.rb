@@ -28,21 +28,6 @@ Rails.application.routes.draw do
     end
   end
   
-  # 取引機能
-  resources :deals do
-    member do
-      patch :accept
-      patch :start
-      patch :complete
-      patch :cancel
-    end
-  end
-  
-  # マッチから取引を作成
-  resources :matches, only: [] do
-    resources :deals, only: [:new, :create]
-  end
-  
   # 統計情報
   get 'stats', to: 'stats#index', as: 'stats_index'
   post 'stats/generate', to: 'stats#generate_stats', as: 'generate_stats'

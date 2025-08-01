@@ -109,7 +109,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:name, :skill, :description, :img)
+    params.require(:user).permit(:name, :skill, :description, :github, :img)
   end
 
   def user_skill_params
@@ -133,14 +133,9 @@ class UsersController < ApplicationController
   end
   
   def generate_stats_async
-    script_path = Rails.root.join('lib', 'tasks', 'scripts', 'generate_match_stats.py')
-    python_path = Rails.root.join('.venv', 'bin', 'python')
-    
-    if File.exist?(python_path) && File.exist?(script_path)
-      # バックグラウンドで実行
-      Thread.new do
-        system("cd #{Rails.root} && #{python_path} #{script_path}")
-      end
+    # バックグラウンドで統計データを生成
+    Thread.new do
+      generate_match_statistics
     end
   end
 
