@@ -90,7 +90,8 @@ https://rails-match-apply-new-ac372e443c7c.herokuapp.com/
 ---
 
 ## ER図
-<img width="3756" height="2441" alt="er_diagram" src="https://github.com/user-attachments/assets/84447fbe-2c9b-4127-8027-74dbb2324ce0" />
+
+<img width="629" height="553" alt="スクリーンショット 2025-08-01 18 06 05" src="https://github.com/user-attachments/assets/ec78d4ff-efd7-43f0-aaf6-6c9c6a825f2f" />
 
 ---
 
