@@ -101,12 +101,11 @@ https://rails-match-apply-new-ac372e443c7c.herokuapp.com/
 
 ・UI修正
 
-・AI実装
 
 ---
 
 ### 中期的な目標
 
-・
+・チャット申請の機能の実装
 
 
