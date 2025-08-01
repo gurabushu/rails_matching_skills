@@ -1,36 +1,65 @@
 module MatchStatsHelper
   def generate_match_statistics
-    script_path = Rails.root.join('lib', 'scripts', 'generate_match_stats.py')
-    venv_python = Rails.root.join('venv', 'bin', 'python')
-    
     begin
-      # 仮想環境のPythonを使用してスクリプトを実行
-      python_command = File.exist?(venv_python) ? venv_python : 'python3'
-      result = system("#{python_command} #{script_path}")
+      # データベースから統計データを生成
+      stats = calculate_match_statistics
       
-      if result
-        # 生成された統計データを読み込み
-        stats_path = Rails.root.join('public', 'match_stats.json')
-        if File.exist?(stats_path)
-          JSON.parse(File.read(stats_path))
-        else
-          nil
-        end
-      else
-        nil
-      end
+      # JSONファイルに保存
+      stats_path = Rails.root.join('public', 'match_stats.json')
+      File.write(stats_path, stats.to_json)
+      
+      stats
     rescue => e
       Rails.logger.error "Match statistics generation failed: #{e.message}"
       nil
     end
   end
+  
+  private
+  
+  def calculate_match_statistics
+    # 総ユーザー数（ゲストユーザーを除く）
+    total_users = User.where.not(email: 'guest@example.com').count
+    
+    # マッチング済みユーザー数
+    matched_user_ids = Match.where(status: 1).pluck(:user_id, :target_user_id).flatten.uniq
+    matched_users = matched_user_ids.count
+    
+    # 総マッチ数
+    total_matches = Match.where(status: 1).count
+    
+    # アクティブな取引数
+    active_deals = Deal.where(status: [0, 1, 2]).count
+    
+    # 完了した取引数
+    completed_deals = Deal.where(status: 3).count
+    
+    # マッチ率を計算
+    match_rate = total_users > 0 ? (matched_users.to_f / total_users * 100).round(1) : 0
+    success_rate = (active_deals + completed_deals) > 0 ? (completed_deals.to_f / (active_deals + completed_deals) * 100).round(1) : 0
+    
+    # 人気スキル（上位5位）
+    popular_skills = User.where.not(email: 'guest@example.com')
+                        .where.not(skill: [nil, ''])
+                        .group(:skill)
+                        .order(Arel.sql('COUNT(*) DESC'))
+                        .limit(5)
+                        .count
+                        .map { |skill, count| { skill: skill, count: count } }
+    
+    {
+      total_users: total_users,
+      match_rate: match_rate,
+      total_matches: total_matches,
+      success_rate: success_rate,
+      popular_skills: popular_skills,
+      generated_at: Time.current.iso8601
+    }
+  end
 
   def match_stats_available?
-    chart1_path = Rails.root.join('public', 'match_rate_chart.png')
-    chart2_path = Rails.root.join('public', 'monthly_trend_chart.png')
     stats_path = Rails.root.join('public', 'match_stats.json')
-    
-    File.exist?(chart1_path) && File.exist?(chart2_path) && File.exist?(stats_path)
+    File.exist?(stats_path)
   end
 
   def get_cached_match_stats

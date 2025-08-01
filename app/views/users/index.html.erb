@@ -48,27 +48,13 @@
       </div>
     </div>
     
-    <div class="charts-container">
-      <% if File.exist?(Rails.root.join('public', 'match_rate_chart.png')) %>
-        <div class="chart-item">
-          <h3>ユーザーマッチ率</h3>
-          <img src="/match_rate_chart.png" alt="マッチ率グラフ" class="chart-image" loading="lazy">
-        </div>
-      <% end %>
-      
-      <% if File.exist?(Rails.root.join('public', 'monthly_trend_chart.png')) %>
-        <div class="chart-item">
-          <h3>月別マッチング推移</h3>
-          <img src="/monthly_trend_chart.png" alt="月別マッチング推移" class="chart-image" loading="lazy">
-        </div>
-      <% end %>
-      
-      <% if File.exist?(Rails.root.join('public', 'popular_skills_chart.png')) %>
-        <div class="chart-item">
-          <h3>人気スキルランキング</h3>
-          <img src="/popular_skills_chart.png" alt="人気スキルランキング" class="chart-image" loading="lazy">
-        </div>
-      <% end %>
+    <!-- 人気スキル表示 -->
+    <div class="popular-skills-section">
+      <h3>人気スキルランキング</h3>
+      <div class="skills-list" id="popular-skills-list">
+        <!-- JavaScriptで動的に表示 -->
+      </div>
+    </div>
     </div>
   </div>
 <% end %>
@@ -256,6 +242,62 @@
 
 <!-- プルダウンメニュー用のCSS・JavaScript -->
 <style>
+/* 人気スキル表示 */
+.popular-skills-section {
+  margin: 20px 0;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.popular-skills-section h3 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.skills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skill-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.skill-item:hover {
+  background: #e9ecef;
+}
+
+.skill-item .rank {
+  font-weight: bold;
+  color: #495057;
+  min-width: 40px;
+}
+
+.skill-item .skill-name {
+  flex: 1;
+  font-weight: 500;
+  color: #333;
+  margin-left: 10px;
+}
+
+.skill-item .skill-count {
+  font-size: 14px;
+  color: #6c757d;
+  background: #dee2e6;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
 /* ログイン後のユーザーナビゲーション */
 .user-navigation {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -606,6 +648,22 @@ async function loadStats() {
       // 人気スキルを表示（最も人気のスキル）
       if (stats.popular_skills && stats.popular_skills.length > 0) {
         document.getElementById('popular-skill-landing').textContent = stats.popular_skills[0].skill;
+        
+        // 人気スキルリストを更新
+        const skillsList = document.getElementById('popular-skills-list');
+        if (skillsList) {
+          skillsList.innerHTML = '';
+          stats.popular_skills.forEach((skillData, index) => {
+            const skillItem = document.createElement('div');
+            skillItem.className = 'skill-item';
+            skillItem.innerHTML = `
+              <span class="rank">${index + 1}位</span>
+              <span class="skill-name">${skillData.skill}</span>
+              <span class="skill-count">${skillData.count}人</span>
+            `;
+            skillsList.appendChild(skillItem);
+          });
+        }
       } else {
         document.getElementById('popular-skill-landing').textContent = '-';
       }

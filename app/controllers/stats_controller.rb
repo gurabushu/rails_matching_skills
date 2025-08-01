@@ -1,4 +1,6 @@
 class StatsController < ApplicationController
+  include MatchStatsHelper
+  
   def index
     # JSONファイルから統計データを読み込み、古い場合は再生成
     json_path = Rails.root.join('public', 'match_stats.json')
@@ -19,22 +21,13 @@ class StatsController < ApplicationController
     end
     
     @stats ||= default_stats
-    
-    # 画像ファイルの存在確認
-    public_path = Rails.root.join('public')
-    @images = {
-      match_rate_chart: File.exist?(public_path.join('match_rate_chart.png')),
-      monthly_trend_chart: File.exist?(public_path.join('monthly_trend_chart.png'))
-    }
   end
   
   def generate_stats
-    # Pythonスクリプトを実行して統計データを生成
-    script_path = Rails.root.join('lib', 'tasks', 'scripts', 'generate_match_stats.py')
-    python_path = Rails.root.join('.venv', 'bin', 'python')
+    # 統計データを生成
+    result = generate_match_statistics
     
-    if File.exist?(python_path) && File.exist?(script_path)
-      system("cd #{Rails.root} && #{python_path} #{script_path}")
+    if result
       flash[:notice] = '統計データを更新しました'
       
       # 統計データ更新完了をURLパラメータで明示
@@ -42,7 +35,7 @@ class StatsController < ApplicationController
       redirect_url += (redirect_url.include?('?') ? '&' : '?') + 'stats_updated=true'
       redirect_to redirect_url
     else
-      flash[:alert] = 'Pythonスクリプトまたは仮想環境が見つかりません'
+      flash[:alert] = '統計データの更新に失敗しました'
       redirect_back(fallback_location: root_path)
     end
   end
@@ -50,12 +43,7 @@ class StatsController < ApplicationController
   private
   
   def generate_fresh_stats
-    script_path = Rails.root.join('lib', 'tasks', 'scripts', 'generate_match_stats.py')
-    python_path = Rails.root.join('.venv', 'bin', 'python')
-    
-    if File.exist?(python_path) && File.exist?(script_path)
-      system("cd #{Rails.root} && #{python_path} #{script_path}")
-    end
+    generate_match_statistics
   end
   
   def default_stats
@@ -64,6 +52,7 @@ class StatsController < ApplicationController
       'match_rate' => 0,
       'total_matches' => Match.count,
       'success_rate' => 0,
+      'popular_skills' => [],
       'generated_at' => Time.current.iso8601
     }
   end
