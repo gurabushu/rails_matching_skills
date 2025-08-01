@@ -7,7 +7,8 @@
 
 
 ## ２、サービス画像
-<img width="1366" height="768" alt="github_img" src="https://github.com/user-attachments/assets/70e7e7c6-a1dc-417e-ae95-738f4dfda113" />
+
+<img width="1470" height="773" alt="スクリーンショット 2025-08-01 18 02 27" src="https://github.com/user-attachments/assets/a40107da-1c08-41d4-a6db-8ea4522fde18" />
 
 ---
 
