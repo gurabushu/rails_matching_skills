@@ -251,6 +251,8 @@ h2 {
   border-radius: 8px;
   padding: 20px;
   transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: visible;
 }
 
 .user-card:hover {
