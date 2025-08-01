@@ -36,6 +36,9 @@ gem "solid_cable"
 # open weather API
 gem 'dotenv-rails'
 
+# OpenAI API for AI matching features
+gem 'ruby-openai'
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
@@ -63,6 +66,9 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+  
+  # ER diagram generation
+  gem "rails-erd", require: false
 end
 
 group :development do

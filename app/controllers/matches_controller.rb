@@ -68,10 +68,46 @@ class MatchesController < ApplicationController
       redirect_to matches_path, alert: 'マッチリクエストの拒否に失敗しました。'
     end
   end
+
+  # AI マッチング提案
+  def ai_suggestions
+    @ai_matches = AiMatchingService.new.suggest_matches_for(current_user)
+    render json: { matches: format_ai_matches(@ai_matches) }
+  end
+
+  # 相性診断
+  def compatibility_check
+    target_user = User.find(params[:user_id])
+    compatibility = AiMatchingService.new.calculate_compatibility(current_user, target_user)
+    
+    render json: {
+      compatibility_score: compatibility[:score],
+      analysis: {
+        reasons: compatibility[:reasons],
+        collaboration_potential: compatibility[:collaboration_potential],
+        skill_synergy: compatibility[:skill_synergy],
+        growth_opportunities: compatibility[:growth_opportunities]
+      }
+    }
+  end
   
   private
   
   def set_user
     @target_user = User.find(params[:user_id])
+  end
+
+  def format_ai_matches(matches)
+    matches.map do |match|
+      {
+        user_id: match[:user].id,
+        name: match[:user].name,
+        skill: match[:user].skill,
+        avatar_url: match[:user].avatar_url(:small),
+        compatibility_score: match[:compatibility_score],
+        reasons: match[:reasons],
+        collaboration_potential: match[:collaboration_potential]
+      }
+    end
   end
 end
