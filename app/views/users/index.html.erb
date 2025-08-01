@@ -130,7 +130,7 @@
   <% if @users.any? %>
     <div class="users-grid">
       <% @users.each do |user| %>
-        <div class="user-card">
+        <div class="user-card" data-user-id="<%= user.id %>">
           <div class="user-card-header">
             <div class="user-avatar-small">
               <img src="<%= user.avatar_url(:small) %>" alt="<%= user.name %>のアバター" class="avatar-small">
@@ -156,6 +156,23 @@
           
           <% if user.hobbies.present? %>
             <p class="hobbies"><strong>趣味:</strong> <%= truncate(user.hobbies, length: 80) %></p>
+          <% end %>
+          
+          <!-- AI相性診断 -->
+          <% if user_signed_in? && user != current_user %>
+            <% compatibility_score = compatibility_score_with(user) %>
+            <% if compatibility_score %>
+              <div class="compatibility-score <%= compatibility_color_class(compatibility_score) %>">
+                <div class="compatibility-header">
+                  <i class="ai-icon">🤖</i>
+                  <span class="compatibility-label">AI相性診断結果</span>
+                </div>
+                <div class="compatibility-details">
+                  <span class="score-percentage"><%= compatibility_score %>%</span>
+                  <span class="score-text">(<%= compatibility_text(compatibility_score) %>)</span>
+                </div>
+              </div>
+            <% end %>
           <% end %>
           
           <p class="created-at">登録日: <%= user.created_at.strftime("%Y年%m月%d日") %></p>
@@ -388,9 +405,9 @@
 
 /* プルダウンメニューの表示/非表示 */
 .user-dropdown-menu {
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
+  position: absolute !important;
+  top: calc(100% + 10px) !important;
+  right: 0 !important;
   background: white;
   border-radius: 12px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
@@ -399,8 +416,9 @@
   visibility: hidden;
   transform: translateY(-10px);
   transition: all 0.3s ease;
-  z-index: 1000;
+  z-index: 999999 !important;
   border: 1px solid rgba(0, 0, 0, 0.1);
+  pointer-events: none;
 }
 
 /* ホバー時にメニューを表示 */
@@ -408,6 +426,7 @@
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+  pointer-events: all;
 }
 
 .user-dropdown:hover .dropdown-arrow {
@@ -573,7 +592,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const dropdownMenu = userDropdown.querySelector('.user-dropdown-menu');
     
     if (menuButton && dropdownMenu) {
-      // マウスオーバー時の追加エフェクト
+      // マウスオーバー時の追加エフェクト（位置計算は削除）
       userDropdown.addEventListener('mouseenter', function() {
         console.log('User dropdown hovered');
         menuButton.style.transform = 'translateY(-2px) scale(1.05)';

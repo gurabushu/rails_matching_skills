@@ -251,6 +251,8 @@ h2 {
   border-radius: 8px;
   padding: 20px;
   transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: visible;
 }
 
 .user-card:hover {
@@ -839,4 +841,143 @@ h2 {
 
 .match-user-info p {
   margin: 0;
+}
+
+/* AI相性診断スタイル */
+.ai-compatibility-section {
+  margin: 12px 0;
+}
+
+.btn-ai-diagnose {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+}
+
+.btn-ai-diagnose:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+}
+
+.btn-ai-diagnose:active {
+  transform: translateY(0);
+}
+
+.btn-ai-diagnose .ai-icon {
+  font-size: 14px;
+}
+
+.compatibility-score {
+  margin: 12px 0;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #e1e5e9;
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  position: relative;
+  z-index: -1 !important;
+}
+
+.compatibility-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.ai-icon {
+  font-size: 16px;
+  margin-right: 6px;
+}
+
+.compatibility-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.compatibility-details {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.score-percentage {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.score-text {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.score-loading {
+  font-size: 12px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.score-error {
+  font-size: 12px;
+  color: #dc3545;
+  font-style: italic;
+}
+
+/* 相性レベル別の色分け */
+.compatibility-excellent {
+  background: linear-gradient(135deg, #d4edda, #c3e6cb);
+  border-color: #28a745;
+}
+
+.compatibility-excellent .score-percentage {
+  color: #155724;
+}
+
+.compatibility-good {
+  background: linear-gradient(135deg, #cce5ff, #b3d9ff);
+  border-color: #007bff;
+}
+
+.compatibility-good .score-percentage {
+  color: #004085;
+}
+
+.compatibility-fair {
+  background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+  border-color: #ffc107;
+}
+
+.compatibility-fair .score-percentage {
+  color: #856404;
+}
+
+.compatibility-low {
+  background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+  border-color: #dc3545;
+}
+
+.compatibility-low .score-percentage {
+  color: #721c24;
+}
+
+.compatibility-unknown {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-color: #ced4da;
+}
+
+.compatibility-unknown .score-loading {
+  color: #6c757d;
 }

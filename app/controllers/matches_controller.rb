@@ -32,12 +32,17 @@ class MatchesController < ApplicationController
   end
 
   def destroy
-    match = current_user.sent_matches.find_by(target_user: @target_user)
-    if match
-      match.destroy
-      redirect_back(fallback_location: root_path, notice: 'いいねを取り消しました。')
-    else
-      redirect_back(fallback_location: root_path, alert: 'マッチリクエストが見つかりません。')
+    begin
+      match = current_user.sent_matches.find_by(target_user: @target_user)
+      if match
+        match.destroy
+        redirect_back(fallback_location: root_path, notice: 'いいねを取り消しました。')
+      else
+        redirect_back(fallback_location: root_path, alert: 'マッチリクエストが見つかりません。')
+      end
+    rescue => e
+      Rails.logger.error "Match destroy error: #{e.message}"
+      redirect_back(fallback_location: root_path, alert: 'エラーが発生しました。')
     end
   end
   
@@ -78,7 +83,21 @@ class MatchesController < ApplicationController
   # 相性診断
   def compatibility_check
     target_user = User.find(params[:user_id])
-    compatibility = AiMatchingService.new.calculate_compatibility(current_user, target_user)
+    
+    begin
+      ai_service = AiMatchingService.new
+      compatibility = ai_service.calculate_compatibility(current_user, target_user)
+    rescue => e
+      Rails.logger.error "Compatibility check error: #{e.message}"
+      # エラー時はデフォルト値を返す
+      compatibility = {
+        score: 50,
+        reasons: ['AI分析に失敗しました'],
+        collaboration_potential: '後ほど再度お試しください',
+        skill_synergy: '分析中です',
+        growth_opportunities: '分析中です'
+      }
+    end
     
     render json: {
       compatibility_score: compatibility[:score],
@@ -89,12 +108,19 @@ class MatchesController < ApplicationController
         growth_opportunities: compatibility[:growth_opportunities]
       }
     }
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: 'ユーザーが見つかりません' }, status: :not_found
+  rescue => e
+    Rails.logger.error "Compatibility check error: #{e.message}"
+    render json: { error: 'エラーが発生しました' }, status: :internal_server_error
   end
   
   private
   
   def set_user
     @target_user = User.find(params[:user_id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to root_path, alert: 'ユーザーが見つかりません。'
   end
 
   def format_ai_matches(matches)

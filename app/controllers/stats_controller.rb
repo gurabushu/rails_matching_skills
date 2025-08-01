@@ -1,5 +1,4 @@
 class StatsController < ApplicationController
-  include MatchStatsHelper
   
   def index
     # JSONファイルから統計データを読み込み、古い場合は再生成

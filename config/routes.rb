@@ -11,11 +11,11 @@ Rails.application.routes.draw do
   resources :matches, only: [:index, :create, :destroy] do
     collection do
       get :ai_suggestions
+      post :compatibility_check
     end
     member do
       patch :accept
       patch :reject
-      post :compatibility_check
     end
   end
   
