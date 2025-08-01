@@ -5,10 +5,10 @@
     <%= link_to "マッチング", matches_path, class: "btn btn-outline" %>
   </div>
 
-  <div class="deals-tabs">
+  <div class="deals-tabs" data-controller="tabs" data-tabs-default-tab-value="client">
     <div class="tab-buttons">
-      <button class="tab-btn active" data-tab="client">提案した交換</button>
-      <button class="tab-btn" data-tab="freelancer">依頼された交換</button>
+      <button class="tab-btn active" data-tab="client" data-action="click->tabs#switch">提案した交換</button>
+      <button class="tab-btn" data-tab="freelancer" data-action="click->tabs#switch">依頼された交換</button>
     </div>
 
     <div class="tab-content active" id="client-tab">
@@ -16,7 +16,7 @@
         <div class="deals-grid">
           <% @client_deals.each do |deal| %>
             <div class="deal-card">
-              <%= link_to deal_path(deal), class: "deal-link" do %>
+              <%= link_to deal_path(deal), class: "deal-link", data: { turbo_method: :get } do %>
                 <div class="deal-header">
                   <h3><%= deal.title %></h3>
                   <span class="status-badge status-<%= deal.status_name %>">
@@ -59,7 +59,7 @@
         <div class="deals-grid">
           <% @freelancer_deals.each do |deal| %>
             <div class="deal-card">
-              <%= link_to deal_path(deal), class: "deal-link" do %>
+              <%= link_to deal_path(deal), class: "deal-link", data: { turbo_method: :get } do %>
                 <div class="deal-header">
                   <h3><%= deal.title %></h3>
                   <span class="status-badge status-<%= deal.status_name %>">
@@ -273,28 +273,3 @@
   }
 }
 </style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const tabButtons = document.querySelectorAll('.tab-btn');
-  const tabContents = document.querySelectorAll('.tab-content');
-  
-  tabButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const tabName = button.dataset.tab;
-      
-      // タブボタンのアクティブ状態を更新
-      tabButtons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
-      
-      // タブコンテンツの表示を更新
-      tabContents.forEach(content => {
-        content.classList.remove('active');
-        if (content.id === tabName + '-tab') {
-          content.classList.add('active');
-        }
-      });
-    });
-  });
-});
-</script>

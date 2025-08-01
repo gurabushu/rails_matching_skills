@@ -1,0 +1,37 @@
+# Name of your application. Used to uniquely configure containers.
+service: rails_match_apply
+
+# Name of the container image.
+image: rails_match_apply
+
+# Deploy to these servers (update this IP to your actual server).
+servers:
+  web:
+    - YOUR_SERVER_IP
+
+# Disable SSL for initial testing
+# proxy:
+#   ssl: false
+
+# Inject ENV variables into containers (secrets come from .kamal/secrets).
+env:
+  secret:
+    - RAILS_MASTER_KEY
+  clear:
+    SOLID_QUEUE_IN_PUMA: true
+    RAILS_ENV: production
+
+# Use local builds
+builder:
+  arch: amd64
+  local: true
+
+# No registry needed for local builds
+# registry: {}
+
+# Simple volume setup
+volumes:
+  - "rails_match_apply_storage:/rails/storage"
+
+# Configure asset path
+asset_path: /rails/public/assets

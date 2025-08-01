@@ -1,7 +1,7 @@
 <div class="container">
   <div class="deal-detail">
     <div class="deal-header">
-      <%= link_to deals_path, class: "back-btn" do %>
+      <%= link_to deals_path, class: "back-btn", data: { turbo_method: :get } do %>
         ← スキル交換一覧に戻る
       <% end %>
       <div class="deal-title-section">
