@@ -51,29 +51,29 @@ class AiMatchingService
   private
 
   def build_compatibility_prompt(user1, user2)
-    """
-    以下の2人のエンジニアの相性を分析してください：
+    <<~PROMPT
+      以下の2人のエンジニアの相性を分析してください：
 
-    【エンジニア A】
-    名前: #{user1.name}
-    スキル: #{user1.skill}
-    趣味・興味: #{user1.hobbies}
+      【エンジニア A】
+      名前: #{user1.name}
+      スキル: #{user1.skill}
+      趣味・興味: #{user1.hobbies}
 
-    【エンジニア B】
-    名前: #{user2.name}
-    スキル: #{user2.skill}
-    趣味・興味: #{user2.hobbies}
+      【エンジニア B】
+      名前: #{user2.name}
+      スキル: #{user2.skill}
+      趣味・興味: #{user2.hobbies}
 
-    以下の観点で分析し、JSON形式で回答してください：
+      以下の観点で分析し、JSON形式で回答してください：
 
-    {
-      "compatibility_score": [0-100の数値],
-      "reasons": ["相性が良い理由1", "理由2", "理由3"],
-      "collaboration_potential": "具体的な協力可能性の説明",
-      "skill_synergy": "スキルの相乗効果について",
-      "growth_opportunities": "お互いの成長機会について"
-    }
-    """
+      {
+        "compatibility_score": [0-100の数値],
+        "reasons": ["相性が良い理由1", "理由2", "理由3"],
+        "collaboration_potential": "具体的な協力可能性の説明",
+        "skill_synergy": "スキルの相乗効果について",
+        "growth_opportunities": "お互いの成長機会について"
+      }
+    PROMPT
   end
 
   def parse_compatibility_response(response)
