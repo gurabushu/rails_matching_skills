@@ -6,7 +6,7 @@
 そんな時にスキマッチで、互いに自身のスキルをトレードし助け合う、完全無料のアプリ
 
 
-## ２、サービズ画像
+## ２、サービス画像
 <img width="1366" height="768" alt="github_img" src="https://github.com/user-attachments/assets/70e7e7c6-a1dc-417e-ae95-738f4dfda113" />
 
 ---
