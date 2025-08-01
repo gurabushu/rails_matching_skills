@@ -32,12 +32,17 @@ class MatchesController < ApplicationController
   end
 
   def destroy
-    match = current_user.sent_matches.find_by(target_user: @target_user)
-    if match
-      match.destroy
-      redirect_back(fallback_location: root_path, notice: 'いいねを取り消しました。')
-    else
-      redirect_back(fallback_location: root_path, alert: 'マッチリクエストが見つかりません。')
+    begin
+      match = current_user.sent_matches.find_by(target_user: @target_user)
+      if match
+        match.destroy
+        redirect_back(fallback_location: root_path, notice: 'いいねを取り消しました。')
+      else
+        redirect_back(fallback_location: root_path, alert: 'マッチリクエストが見つかりません。')
+      end
+    rescue => e
+      Rails.logger.error "Match destroy error: #{e.message}"
+      redirect_back(fallback_location: root_path, alert: 'エラーが発生しました。')
     end
   end
   
@@ -95,6 +100,8 @@ class MatchesController < ApplicationController
   
   def set_user
     @target_user = User.find(params[:user_id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to root_path, alert: 'ユーザーが見つかりません。'
   end
 
   def format_ai_matches(matches)
