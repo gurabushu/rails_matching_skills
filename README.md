@@ -67,6 +67,8 @@ https://rails-match-apply-new-ac372e443c7c.herokuapp.com/
 
 バックエンド
 
+・CRUD処理
+
 ・ルビー3.3.3
 
 ・Ruby on rails 8
