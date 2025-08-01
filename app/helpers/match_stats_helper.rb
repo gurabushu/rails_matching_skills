@@ -28,15 +28,8 @@ module MatchStatsHelper
     # 総マッチ数
     total_matches = Match.where(status: 1).count
     
-    # アクティブな取引数
-    active_deals = Deal.where(status: [0, 1, 2]).count
-    
-    # 完了した取引数
-    completed_deals = Deal.where(status: 3).count
-    
     # マッチ率を計算
     match_rate = total_users > 0 ? (matched_users.to_f / total_users * 100).round(1) : 0
-    success_rate = (active_deals + completed_deals) > 0 ? (completed_deals.to_f / (active_deals + completed_deals) * 100).round(1) : 0
     
     # 人気スキル（上位5位）
     popular_skills = User.where.not(email: 'guest@example.com')
@@ -51,7 +44,6 @@ module MatchStatsHelper
       total_users: total_users,
       match_rate: match_rate,
       total_matches: total_matches,
-      success_rate: success_rate,
       popular_skills: popular_skills,
       generated_at: Time.current.iso8601
     }

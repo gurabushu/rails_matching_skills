@@ -2,7 +2,6 @@ class Match < ApplicationRecord
   belongs_to :user
   belongs_to :target_user, class_name: 'User'
   has_one :chat_room, dependent: :destroy
-  has_many :deals, dependent: :destroy
   
   # ステータスの定義
   STATUSES = {
