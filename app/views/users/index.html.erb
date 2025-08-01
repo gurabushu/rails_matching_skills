@@ -37,13 +37,25 @@
     
     <div class="user-menu-container">
       <div class="user-dropdown">
-        <button class="user-menu-button" type="button" id="user-menu-trigger">
+        <button class="user-menu-button" type="button">
           <span class="user-avatar">
             <img src="<%= current_user.avatar_url(:nav) %>" alt="<%= current_user.name %>のアバター" class="nav-avatar">
           </span>
           <span class="user-name"><%= current_user.name || "エンジニア" %></span>
           <span class="dropdown-arrow">▼</span>
         </button>
+        
+        <div class="user-dropdown-menu">
+          <%= link_to "プロフィール編集", edit_user_registration_path, class: "dropdown-item" %>
+          <%= link_to "マイプロフィール", user_path(current_user), class: "dropdown-item" %>
+          <%= link_to "マッチング一覧", matches_path, class: "dropdown-item" %>
+          <%= link_to "チャット", chat_rooms_path, class: "dropdown-item" %>
+          <div class="dropdown-divider"></div>
+          <%= button_to "ログアウト", destroy_user_session_path, 
+                        method: :delete, 
+                        class: "dropdown-item logout-btn",
+                        data: { confirm: "ログアウトしますか？" } %>
+        </div>
       </div>
     </div>
   </div>
@@ -148,22 +160,19 @@
           
           <!-- AI相性診断 -->
           <% if user_signed_in? && user != current_user %>
-            <div class="ai-compatibility-section" data-user-id="<%= user.id %>">
-              <button class="btn btn-ai-diagnose" onclick="showCompatibilityScore(this, <%= user.id %>)">
-                <i class="ai-icon">🤖</i>
-                AI診断を見る
-              </button>
-              
-              <div class="compatibility-score compatibility-unknown" style="display: none;">
+            <% compatibility_score = compatibility_score_with(user) %>
+            <% if compatibility_score %>
+              <div class="compatibility-score <%= compatibility_color_class(compatibility_score) %>">
                 <div class="compatibility-header">
                   <i class="ai-icon">🤖</i>
                   <span class="compatibility-label">AI相性診断結果</span>
                 </div>
                 <div class="compatibility-details">
-                  <span class="score-loading">分析中...</span>
+                  <span class="score-percentage"><%= compatibility_score %>%</span>
+                  <span class="score-text">(<%= compatibility_text(compatibility_score) %>)</span>
                 </div>
               </div>
-            </div>
+            <% end %>
           <% end %>
           
           <p class="created-at">登録日: <%= user.created_at.strftime("%Y年%m月%d日") %></p>
@@ -396,9 +405,9 @@
 
 /* プルダウンメニューの表示/非表示 */
 .user-dropdown-menu {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
+  position: absolute !important;
+  top: calc(100% + 10px) !important;
+  right: 0 !important;
   background: white;
   border-radius: 12px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
@@ -407,13 +416,13 @@
   visibility: hidden;
   transform: translateY(-10px);
   transition: all 0.3s ease;
-  z-index: 9999999 !important;
+  z-index: 999999 !important;
   border: 1px solid rgba(0, 0, 0, 0.1);
   pointer-events: none;
 }
 
-/* 表示時 */
-.user-dropdown-menu.show {
+/* ホバー時にメニューを表示 */
+.user-dropdown:hover .user-dropdown-menu {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
@@ -575,67 +584,34 @@ document.addEventListener('DOMContentLoaded', function() {
   console.log('DOM loaded, setting up hover dropdown event listeners');
   
   // ユーザードロップダウンメニューの設定
-  const menuTrigger = document.getElementById('user-menu-trigger');
-  const floatingMenu = document.getElementById('floating-dropdown-menu');
   const userDropdown = document.querySelector('.user-dropdown');
-  
-  if (menuTrigger && floatingMenu) {
-    console.log('Floating dropdown menu setup');
+  if (userDropdown) {
+    console.log('User dropdown found');
     
-    // マウスオーバー時にメニューを表示
-    menuTrigger.addEventListener('mouseenter', function() {
-      console.log('Menu trigger hovered');
-      
-      // ボタンの位置を取得
-      const triggerRect = menuTrigger.getBoundingClientRect();
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-      
-      // メニューの位置を設定
-      floatingMenu.style.top = (triggerRect.bottom + scrollTop + 10) + 'px';
-      floatingMenu.style.left = (triggerRect.right + scrollLeft - 220) + 'px';
-      
-      // メニューを表示
-      floatingMenu.style.display = 'block';
-      floatingMenu.classList.add('show');
-      
-      // ボタンエフェクト
-      menuTrigger.style.transform = 'translateY(-2px) scale(1.05)';
-    });
+    const menuButton = userDropdown.querySelector('.user-menu-button');
+    const dropdownMenu = userDropdown.querySelector('.user-dropdown-menu');
     
-    // マウスが離れた時にメニューを非表示（遅延付き）
-    let hideTimeout;
-    
-    function hideMenu() {
-      hideTimeout = setTimeout(() => {
-        floatingMenu.classList.remove('show');
-        setTimeout(() => {
-          floatingMenu.style.display = 'none';
-        }, 300);
-        menuTrigger.style.transform = 'translateY(0) scale(1)';
-      }, 100);
+    if (menuButton && dropdownMenu) {
+      // マウスオーバー時の追加エフェクト（位置計算は削除）
+      userDropdown.addEventListener('mouseenter', function() {
+        console.log('User dropdown hovered');
+        menuButton.style.transform = 'translateY(-2px) scale(1.05)';
+      });
+      
+      userDropdown.addEventListener('mouseleave', function() {
+        console.log('User dropdown mouse left');
+        menuButton.style.transform = 'translateY(0) scale(1)';
+      });
+      
+      // クリック以外の場所をクリックしたときにメニューを閉じる
+      document.addEventListener('click', function(event) {
+        if (!userDropdown.contains(event.target)) {
+          dropdownMenu.style.opacity = '0';
+          dropdownMenu.style.visibility = 'hidden';
+          dropdownMenu.style.transform = 'translateY(-10px)';
+        }
+      });
     }
-    
-    menuTrigger.addEventListener('mouseleave', hideMenu);
-    
-    // メニュー自体にマウスが入った時はhideをキャンセル
-    floatingMenu.addEventListener('mouseenter', function() {
-      clearTimeout(hideTimeout);
-    });
-    
-    // メニューからマウスが離れた時は非表示
-    floatingMenu.addEventListener('mouseleave', hideMenu);
-    
-    // クリック以外の場所をクリックしたときにメニューを閉じる
-    document.addEventListener('click', function(event) {
-      if (!menuTrigger.contains(event.target) && !floatingMenu.contains(event.target)) {
-        floatingMenu.classList.remove('show');
-        setTimeout(() => {
-          floatingMenu.style.display = 'none';
-        }, 300);
-        menuTrigger.style.transform = 'translateY(0) scale(1)';
-      }
-    });
   }
   
   // スキルフィルターのプルダウン（選択時に送信）
@@ -730,19 +706,4 @@ document.addEventListener('turbo:load', function() {
     sortSelect.dataset.listenerAdded = 'true';
   }
 });
-  });
-});
 </script>
-
-<!-- 独立したドロップダウンメニュー（body直下） -->
-<div class="user-dropdown-menu" id="floating-dropdown-menu" style="display: none;">
-  <%= link_to "プロフィール編集", edit_user_registration_path, class: "dropdown-item" %>
-  <%= link_to "マイプロフィール", user_path(current_user), class: "dropdown-item" %>
-  <%= link_to "マッチング一覧", matches_path, class: "dropdown-item" %>
-  <%= link_to "チャット", chat_rooms_path, class: "dropdown-item" %>
-  <div class="dropdown-divider"></div>
-  <%= button_to "ログアウト", destroy_user_session_path, 
-                method: :delete, 
-                class: "dropdown-item logout-btn",
-                data: { confirm: "ログアウトしますか？" } %>
-</div>
