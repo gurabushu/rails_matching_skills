@@ -2,9 +2,9 @@
   <div class="profile-container">
     <div class="profile-header">
       <%= link_to root_path, class: "back-btn" do %>
-        ← ユーザー一覧に戻る
+        ← エンジニア一覧に戻る
       <% end %>
-      <h1><%= @user.name %>さんのプロフィール</h1>
+      <h1>👨‍💻 <%= @user.name %>さんのエンジニアプロフィール</h1>
     </div>
 
     <div class="profile-content">
@@ -16,7 +16,7 @@
           </div>
           
           <div class="info-item">
-            <label>スキル</label>
+            <label>🛠️ 技術スキル</label>
             <span class="skill-tag"><%= @user.skill %></span>
           </div>
           

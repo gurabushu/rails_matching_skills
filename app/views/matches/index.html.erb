@@ -1,18 +1,18 @@
 <div class="matches-container" data-controller="tabs">
   <div class="page-header">
-    <h1>マッチング管理</h1>
+    <h1>🤝 エンジニアマッチング管理</h1>
     <div class="nav-links">
-      <%= link_to "← スキル一覧", root_path, class: "btn btn-secondary" %>
-      <%= link_to "チャット", chat_rooms_path, class: "btn btn-outline" %>
-      <%= link_to "スキル交換", deals_path, class: "btn btn-outline" %>
+      <%= link_to "← エンジニア一覧", root_path, class: "btn btn-secondary" %>
+      <%= link_to "💬 チャット", chat_rooms_path, class: "btn btn-outline" %>
+      <%= link_to "🔄 技術スキル交換", deals_path, class: "btn btn-outline" %>
     </div>
   </div>
   
   <!-- タブメニュー -->
   <div class="match-tabs">
-    <button class="tab-btn active" data-tab="matched" data-action="click->tabs#switch">マッチ済み</button>
-    <button class="tab-btn" data-tab="received" data-action="click->tabs#switch">受信済み</button>
-    <button class="tab-btn" data-tab="sent" data-action="click->tabs#switch">送信済み</button>
+    <button class="tab-btn active" data-tab="matched" data-action="click->tabs#switch">🎯 マッチ済みエンジニア</button>
+    <button class="tab-btn" data-tab="received" data-action="click->tabs#switch">📨 受信したリクエスト</button>
+    <button class="tab-btn" data-tab="sent" data-action="click->tabs#switch">📤 送信したリクエスト</button>
   </div>
   
   <!-- マッチ済みユーザー -->

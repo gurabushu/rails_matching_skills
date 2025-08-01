@@ -4,44 +4,8 @@
       <%= link_to deal_path(@deal), class: "back-btn" do %>
         ← 取引詳細に戻る
       <% end %>
-      <h1>スキル交換を編集</h1>
-      <p>相手: <strong><%= @deal.freelancer.name %></strong></p>
-    </div>
 
-    <%= form_with model: @deal, local: true, class: "deal-form" do |form| %>
-      <% if @deal.errors.any? %>
-        <div class="error-messages">
-          <h4><%= pluralize(@deal.errors.count, "error") %> prohibited this deal from being saved:</h4>
-          <ul>
-            <% @deal.errors.full_messages.each do |message| %>
-              <li><%= message %></li>
-            <% end %>
-          </ul>
-        </div>
-      <% end %>
-
-      <div class="form-group">
-        <%= form.label :title, "交換タイトル", class: "form-label" %>
-        <%= form.text_field :title, class: "form-control", placeholder: "例: ウェブサイトのデザイン制作" %>
-      </div>
-
-      <div class="form-group">
-        <%= form.label :description, "交換内容", class: "form-label" %>
-        <%= form.text_area :description, rows: 6, class: "form-control", 
-                          placeholder: "スキル交換の詳細な内容、要件、成果物などを記載してください" %>
-      </div>
-
-      <div class="form-group">
-        <%= form.label :deadline, "納品予定日", class: "form-label" %>
-        <%= form.date_field :deadline, class: "form-control", min: Date.current %>
-        <small class="form-help">いつまでに完成させる予定ですか？</small>
-      </div>
-
-      <div class="form-actions">
-        <%= form.submit "スキル交換を更新する", class: "btn btn-primary" %>
-        <%= link_to "キャンセル", deal_path(@deal), class: "btn btn-outline" %>
-      </div>
-    <% end %>
+      
   </div>
 </div>
 

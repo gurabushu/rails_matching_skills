@@ -1,68 +1,25 @@
 <% unless user_signed_in? %>
-  <h1>スキマッチ 新定番！スキルマッチングのプラットフォーム</h1>
+  <h1>TechConnect - エンジニア同士がスキルで繋がるマッチングサービス</h1>
 
-  <div class="title-description">
-    <p>双方の必要なスキルをマッチング</br>
-      <span class="subtitle">スキルを共有し、新しいつながりを見つけよう</span></br>
-      無償でスキルを交換し、マッチングを実現するプラットフォームです。</p>
+  <div class="hero-description">
+    <p>💻 <strong>技術スキルを交換し、エンジニア同士の横のつながりを作ろう</strong></p>
+    <p>フロントエンド・バックエンド・インフラ・データサイエンスなど、<br>
+      異なる技術領域のエンジニアが知識とスキルを共有できるプラットフォームです</p>
+    <div class="tech-highlights">
+      <span class="tech-tag">React ⚛️</span>
+      <span class="tech-tag">Python 🐍</span>
+      <span class="tech-tag">Docker 🐳</span>
+      <span class="tech-tag">AWS ☁️</span>
+      <span class="tech-tag">Vue.js 💚</span>
+      <span class="tech-tag">Go 🔥</span>
+    </div>
   </div>
 
-  <!-- 統計情報セクション（ログアウト時） -->
-  <div class="stats-section">
-    <div class="stats-header">
-      <h2>📊 サービス統計</h2>
-      <p>リアルタイムでのマッチング成果をご覧ください</p>
-      <div style="margin-top: 15px;">
-        <%= button_to "📈 統計データ更新", generate_stats_path, 
-                      method: :post, 
-                      class: "btn btn-sm btn-primary",
-                      title: "統計データを最新に更新",
-                      data: { confirm: "統計データを更新しますか？" },
-                      style: "display: inline-block;" %>
-      </div>
-    </div>
-    
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-number" id="total-users-landing">-</div>
-        <div class="stat-label">登録ユーザー数</div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-number" id="match-rate-landing">-%</div>
-        <div class="stat-label">マッチ成功率</div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-number" id="total-matches-landing">-</div>
-        <div class="stat-label">総マッチ数</div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-number" id="success-rate-landing">-%</div>
-        <div class="stat-label">取引成功率</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" id="popular-skill-landing">-</div>
-        <div class="stat-label">最人気スキル</div>
-      </div>
-    </div>
-    
-    <!-- 人気スキル表示 -->
-    <div class="popular-skills-section">
-      <h3>人気スキルランキング</h3>
-      <div class="skills-list" id="popular-skills-list">
-        <!-- JavaScriptで動的に表示 -->
-      </div>
-    </div>
-    </div>
-  </div>
-<% end %>
 
 <!-- ナビゲーション -->
 <% unless user_signed_in? %>
   <div class="navigation">
-    <p>スキルを共有し、新しいつながりを見つけよう</p>
+    <p>🚀 技術スキルを共有し、エンジニア仲間とのネットワークを広げよう</p>
     <div class="auth-actions">
       <%= link_to "ログイン", new_user_session_path, class: "btn btn-primary" %>
       <%= link_to "新規登録", new_user_registration_path, class: "btn btn-success" %>
@@ -105,7 +62,7 @@
 
 <!-- ユーザー一覧 -->
 <section class="users-list">
-  <h2>スキル一覧</h2>
+  <h2>👨‍💻 エンジニア一覧 - スキルでつながろう</h2>
   
   <!-- 検索・フィルターフォーム -->
   <div class="search-section">
@@ -115,7 +72,7 @@
       <div class="search-row">
         <div class="search-field">
           <%= f.text_field :search, 
-                          placeholder: "名前、スキル、自己紹介から検索...", 
+                          placeholder: "名前、技術スキル、専門分野から検索（例：React, Python, AWS）...", 
                           value: params[:search],
                           class: "search-input",
                           data: { search_target: "input", action: "keydown->search#submitOnEnter" } %>
@@ -203,7 +160,7 @@
                   </span>
                 <% when :sent_pending %>
                   <span class="match-status pending">
-                    ⏳ いいね送信済み
+                    いいね！👍送信済み
                   </span>
                   <%= button_to "取り消す", destroy_match_path(user), 
                               method: :delete, 
@@ -211,7 +168,7 @@
                               data: { confirm: "いいねを取り消しますか？" } %>
                 <% when :received_pending %>
                   <span class="match-status received">
-                    💌 いいねが届いています
+                    いいね！👍が届いています
                   </span>
                 <% else %>
                   <%= button_to "👍 いいね", create_match_path(user), 
@@ -234,7 +191,7 @@
           別のキーワードで検索するか、フィルターを変更してお試しください。
         </p>
       <% else %>
-        <p class="no-users">まだユーザーが登録されていません。</p>
+        <p class="no-users">まだエンジニアが登録されていません。最初のエンジニアになって、コミュニティを始めませんか？</p>
       <% end %>
     </div>
   <% end %>
@@ -242,6 +199,53 @@
 
 <!-- プルダウンメニュー用のCSS・JavaScript -->
 <style>
+/* エンジニア向けヒーローセクション */
+.hero-description {
+  text-align: center;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 15px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+}
+
+.hero-description p {
+  margin: 10px 0;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.hero-description p:first-child {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.tech-highlights {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.tech-tag {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.tech-tag:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
 /* 人気スキル表示 */
 .popular-skills-section {
   margin: 20px 0;
@@ -629,55 +633,4 @@ document.addEventListener('turbo:load', function() {
     sortSelect.dataset.listenerAdded = 'true';
   }
 });
-</script>
-
-<!-- 統計データ読み込み用JavaScript -->
-<script>
-async function loadStats() {
-  try {
-    const response = await fetch('/match_stats.json');
-    if (response.ok) {
-      const stats = await response.json();
-      
-      // 統計データを表示
-      document.getElementById('total-users-landing').textContent = stats.total_users || '-';
-      document.getElementById('match-rate-landing').textContent = (stats.match_rate || 0) + '%';
-      document.getElementById('total-matches-landing').textContent = stats.total_matches || '-';
-      document.getElementById('success-rate-landing').textContent = (stats.success_rate || 0) + '%';
-      
-      // 人気スキルを表示（最も人気のスキル）
-      if (stats.popular_skills && stats.popular_skills.length > 0) {
-        document.getElementById('popular-skill-landing').textContent = stats.popular_skills[0].skill;
-        
-        // 人気スキルリストを更新
-        const skillsList = document.getElementById('popular-skills-list');
-        if (skillsList) {
-          skillsList.innerHTML = '';
-          stats.popular_skills.forEach((skillData, index) => {
-            const skillItem = document.createElement('div');
-            skillItem.className = 'skill-item';
-            skillItem.innerHTML = `
-              <span class="rank">${index + 1}位</span>
-              <span class="skill-name">${skillData.skill}</span>
-              <span class="skill-count">${skillData.count}人</span>
-            `;
-            skillsList.appendChild(skillItem);
-          });
-        }
-      } else {
-        document.getElementById('popular-skill-landing').textContent = '-';
-      }
-      
-      console.log('Statistics loaded successfully');
-    } else {
-      console.log('Statistics file not found, using default values');
-    }
-  } catch (error) {
-    console.log('Error loading statistics:', error);
-  }
-}
-
-// ページ読み込み時に統計データを読み込む
-document.addEventListener('DOMContentLoaded', loadStats);
-document.addEventListener('turbo:load', loadStats);
 </script>
