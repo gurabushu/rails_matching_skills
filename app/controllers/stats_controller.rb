@@ -21,6 +21,12 @@ class StatsController < ApplicationController
     end
     
     @stats ||= default_stats
+    
+    # 画像データを初期化
+    @images = {
+      match_rate_chart: File.exist?(Rails.root.join('public', 'match_rate_chart.png')),
+      monthly_trend_chart: File.exist?(Rails.root.join('public', 'monthly_trend_chart.png'))
+    }
   end
   
   def generate_stats

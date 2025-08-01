@@ -29,7 +29,7 @@
                   </div>
                 <% end %>
                 <div class="file-info">
-                  <span class="file-icon">📎</span>
+                  <span class="file-icon">[ファイル]</span>
                   <span class="file-name"><%= message.file_name %></span>
                   <span class="file-size">(<%= message.file_size %>)</span>
                   <%= link_to "ダウンロード", download_file_chat_room_message_path(@chat_room, message), class: "download-btn" %>
@@ -49,7 +49,7 @@
         <div class="file-input-container">
           <%= form.file_field :file, class: "file-input", id: "file-input" %>
           <label for="file-input" class="file-input-label">
-            📎 ファイル添付
+            ファイル添付
           </label>
           <div id="file-preview" class="file-preview"></div>
         </div>
@@ -345,10 +345,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const fileSize = (file.size / 1024 / 1024).toFixed(2) + ' MB';
         filePreview.innerHTML = `
           <div style="display: flex; align-items: center; gap: 8px; padding: 8px; background: #e3f2fd; border-radius: 4px;">
-            <span>📎</span>
+            <span>[ファイル]</span>
             <span style="font-weight: 500;">${fileName}</span>
             <span style="color: #666;">(${fileSize})</span>
-            <button type="button" onclick="clearFileSelection()" style="background: none; border: none; color: #666; cursor: pointer; margin-left: auto;">✕</button>
+            <button type="button" onclick="clearFileSelection()" style="background: none; border: none; color: #666; cursor: pointer; margin-left: auto;">×</button>
           </div>
         `;
       } else {

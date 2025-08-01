@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   include MatchStatsHelper
-  before_action :authenticate_user!, except: [:index, :show, :guest_sign_in]
+  before_action :authenticate_user!, except: [:index, :show, :guest_login]
   
   def index
     @users = User.all
@@ -9,8 +9,8 @@ class UsersController < ApplicationController
     if params[:search].present?
       search_term = "%#{params[:search].downcase}%"
       @users = @users.where(
-        "LOWER(name) LIKE ? OR LOWER(skill) LIKE ? OR LOWER(description) LIKE ?", 
-        search_term, search_term, search_term
+        "LOWER(name) LIKE ? OR LOWER(skill) LIKE ? OR LOWER(description) LIKE ? OR LOWER(hobbies) LIKE ?", 
+        search_term, search_term, search_term, search_term
       )
     end
     
@@ -40,7 +40,7 @@ class UsersController < ApplicationController
     ensure_fresh_stats
   end
 
-  def guest_sign_in
+  def guest_login
     # ゲストユーザーを最小限の情報で作成
     guest_user = User.find_or_create_by(email: 'guest@example.com') do |user|
       user.password = SecureRandom.urlsafe_base64
@@ -50,8 +50,8 @@ class UsersController < ApplicationController
     end
     
     sign_in guest_user
-    # 直接スキル一覧画面へリダイレクト
-    redirect_to users_path, notice: 'ゲストユーザーとしてログインしました。スキル一覧を確認してください。'
+    # トップページ（ユーザー一覧）へリダイレクト
+    redirect_to root_path, notice: 'ゲストユーザーとしてログインしました。'
   end
 
   def show
@@ -79,16 +79,7 @@ class UsersController < ApplicationController
     end
   end
 
-    def guest_login
-      user = User.find_or_create_by(email: 'guest@example.com') do |u|
-        u.password = SecureRandom.hex(10)
-        u.name = "ゲストユーザー"
-      end
-      sign_in user
-      redirect_to root_path, notice: "ゲストユーザーとしてログインしました。"
-    end
-
-    def update_skill   
+  def update_skill   
         @user = User.find(params[:id])  
         if @user.update(user_skill_params)
           redirect_to @user, notice: "スキルが更新されました。"
@@ -109,7 +100,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:name, :skill, :description, :github, :img)
+    params.require(:user).permit(:name, :skill, :description, :hobbies, :github, :img, :avatar_image)
   end
 
   def user_skill_params

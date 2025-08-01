@@ -7,7 +7,7 @@
       <h1>プロフィール編集</h1>
     </div>
 
-    <%= form_with model: @user, local: true, class: "user-form" do |form| %>
+    <%= form_with model: @user, local: true, class: "user-form", multipart: true do |form| %>
       <% if @user.errors.any? %>
         <div class="error-messages">
           <h4><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h4>
@@ -25,6 +25,21 @@
       </div>
 
       <div class="form-group">
+        <%= form.label :avatar_image, "プロフィール画像", class: "form-label" %>
+        <div class="avatar-upload-container">
+          <div class="current-avatar">
+            <img src="<%= @user.avatar_url(:thumb) %>" alt="現在のアバター" class="avatar-preview">
+            <small class="form-help">現在の画像</small>
+          </div>
+          <div class="upload-field">
+            <%= form.file_field :avatar_image, class: "form-control", accept: "image/*", 
+                               id: "avatar_image_input" %>
+            <small class="form-help">JPG、PNG、GIF形式の画像ファイルをアップロードしてください。未設定の場合はデフォルト画像が表示されます。</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
         <%= form.label :skill, "スキル", class: "form-label" %>
         <%= form.text_field :skill, class: "form-control", placeholder: "例: Ruby on Rails, JavaScript, デザイン" %>
         <small class="form-help">あなたの得意なスキルや専門分野を入力してください</small>
@@ -38,8 +53,15 @@
       </div>
 
       <div class="form-group">
+        <%= form.label :hobbies, "趣味・興味", class: "form-label" %>
+        <%= form.text_area :hobbies, rows: 3, class: "form-control", 
+                          placeholder: "例：読書、映画鑑賞、ハイキング、料理、ゲーム開発、音楽など" %>
+        <small class="form-help">あなたの趣味や興味のあることを入力してください（最大200文字）</small>
+      </div>
+
+      <div class="form-group">
         <%= form.label :github, "GitHub URL", class: "form-label" %>
-        <%= form.url_field :github, class: "form-control", 
+        <%= form.text_field :github, class: "form-control", 
                           placeholder: "https://github.com/username" %>
         <small class="form-help">GitHubプロフィールのURLを入力してください（任意）</small>
       </div>
@@ -66,6 +88,46 @@
   background: #f8f9fa;
   padding: 24px;
   border-bottom: 1px solid #e1e5e9;
+}
+
+.avatar-upload-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.current-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.avatar-preview {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e1e5e9;
+}
+
+.upload-field {
+  flex: 1;
+}
+
+.upload-field .form-control[type="file"] {
+  padding: 8px;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upload-field .form-control[type="file"]:hover {
+  border-color: #4a90e2;
+  background-color: #f0f7ff;
 }
 
 .back-btn {
@@ -206,3 +268,39 @@ textarea.form-control {
   }
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const avatarInput = document.getElementById('avatar_image_input');
+  const avatarPreview = document.querySelector('.avatar-preview');
+  
+  if (avatarInput && avatarPreview) {
+    avatarInput.addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      
+      if (file) {
+        // ファイルサイズチェック（5MB制限）
+        if (file.size > 5 * 1024 * 1024) {
+          alert('ファイルサイズは5MB以下にしてください');
+          event.target.value = '';
+          return;
+        }
+        
+        // ファイルタイプチェック
+        if (!file.type.match(/^image\/(jpeg|png|gif)$/)) {
+          alert('JPEG、PNG、GIF形式のファイルのみアップロード可能です');
+          event.target.value = '';
+          return;
+        }
+        
+        // プレビュー表示
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          avatarPreview.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+});
+</script>

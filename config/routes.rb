@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :show, :edit, :update]
   
   # ゲストログイン用のルート
-  post '/users/guest_sign_in', to: 'users#guest_sign_in'
+  post '/users/guest_sign_in', to: 'users#guest_login'
   
   # マッチング機能
   resources :matches, only: [:index, :create, :destroy] do

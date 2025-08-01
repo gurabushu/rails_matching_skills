@@ -1,23 +1,23 @@
 <div class="matches-container" data-controller="tabs">
   <div class="page-header">
-    <h1>🤝 エンジニア同士のつながり管理</h1>
+    <h1>エンジニア同士のつながり管理</h1>
     <div class="nav-links">
       <%= link_to "← エンジニア一覧", root_path, class: "btn btn-secondary" %>
-      <%= link_to "💬 チャット", chat_rooms_path, class: "btn btn-outline" %>
+      <%= link_to "チャット", chat_rooms_path, class: "btn btn-outline" %>
     </div>
   </div>
   
   <!-- タブメニュー -->
   <div class="match-tabs">
-    <button class="tab-btn active" data-tab="matched" data-action="click->tabs#switch">🎯 マッチ済みエンジニア</button>
-    <button class="tab-btn" data-tab="received" data-action="click->tabs#switch">📨 受信したリクエスト</button>
-    <button class="tab-btn" data-tab="sent" data-action="click->tabs#switch">📤 送信したリクエスト</button>
+    <button class="tab-btn active" data-tab="matched" data-action="click->tabs#switch">マッチ済みエンジニア</button>
+    <button class="tab-btn" data-tab="received" data-action="click->tabs#switch">受信したリクエスト</button>
+    <button class="tab-btn" data-tab="sent" data-action="click->tabs#switch">送信したリクエスト</button>
   </div>
   
   <!-- マッチ済みユーザー -->
   <div class="tab-content active" id="matched-tab">
     <div class="tab-header">
-      <h2>💕 マッチしたユーザー (<%= @matched_users.count %>)</h2>
+      <h2>マッチしたユーザー (<%= @matched_users.count %>)</h2>
       <div class="quick-nav">
         <%= link_to "チャット一覧", chat_rooms_path, class: "btn btn-outline btn-sm" %>
       </div>
@@ -31,8 +31,15 @@
                         @received_matches.find { |m| m.user == user && m.status == 1 }
           %>
           <div class="match-card matched">
-            <h3><%= user.name %></h3>
-            <p><strong>スキル:</strong> <%= user.skill %></p>
+            <div class="match-user-header">
+              <div class="match-avatar">
+                <img src="<%= user.avatar_url(:small) %>" alt="<%= user.name %>のアバター" class="avatar-match">
+              </div>
+              <div class="match-user-info">
+                <h3><%= user.name %></h3>
+                <p><strong>スキル:</strong> <%= user.skill %></p>
+              </div>
+            </div>
             <% if user.description.present? %>
               <p class="description"><%= truncate(user.description, length: 80) %></p>
             <% end %>
@@ -59,14 +66,21 @@
   
   <!-- 受信したマッチリクエスト -->
   <div class="tab-content" id="received-tab">
-    <h2>💌 受信したいいね (<%= @received_matches.where(status: 0).count %>)</h2>
+    <h2>受信したいいね (<%= @received_matches.where(status: 0).count %>)</h2>
     <% received_pending = @received_matches.where(status: 0).includes(:user) %>
     <% if received_pending.any? %>
       <div class="matches-grid">
         <% received_pending.each do |match| %>
           <div class="match-card received">
-            <h3><%= match.user.name %></h3>
-            <p><strong>スキル:</strong> <%= match.user.skill %></p>
+            <div class="match-user-header">
+              <div class="match-avatar">
+                <img src="<%= match.user.avatar_url(:small) %>" alt="<%= match.user.name %>のアバター" class="avatar-match">
+              </div>
+              <div class="match-user-info">
+                <h3><%= match.user.name %></h3>
+                <p><strong>スキル:</strong> <%= match.user.skill %></p>
+              </div>
+            </div>
             <% if match.user.description.present? %>
               <p class="description"><%= truncate(match.user.description, length: 80) %></p>
             <% end %>
@@ -92,14 +106,21 @@
   
   <!-- 送信したマッチリクエスト -->
   <div class="tab-content" id="sent-tab">
-    <h2>📤 送信したいいね (<%= @sent_matches.where(status: 0).count %>)</h2>
+    <h2>送信したいいね (<%= @sent_matches.where(status: 0).count %>)</h2>
     <% sent_pending = @sent_matches.where(status: 0).includes(:target_user) %>
     <% if sent_pending.any? %>
       <div class="matches-grid">
         <% sent_pending.each do |match| %>
           <div class="match-card sent">
-            <h3><%= match.target_user.name %></h3>
-            <p><strong>スキル:</strong> <%= match.target_user.skill %></p>
+            <div class="match-user-header">
+              <div class="match-avatar">
+                <img src="<%= match.target_user.avatar_url(:small) %>" alt="<%= match.target_user.name %>のアバター" class="avatar-match">
+              </div>
+              <div class="match-user-info">
+                <h3><%= match.target_user.name %></h3>
+                <p><strong>スキル:</strong> <%= match.target_user.skill %></p>
+              </div>
+            </div>
             <% if match.target_user.description.present? %>
               <p class="description"><%= truncate(match.target_user.description, length: 80) %></p>
             <% end %>
