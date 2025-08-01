@@ -121,7 +121,7 @@ https://rails-match-apply-new-ac372e443c7c.herokuapp.com/
 
 ---
 
-###中期的な目標
+### 中期的な目標
 
 ・ユーザー同士が対等に取引できるように仕様を追加する
 
