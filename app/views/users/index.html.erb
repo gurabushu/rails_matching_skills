@@ -1,20 +1,20 @@
 <% unless user_signed_in? %>
-  <h1>TechConnect - エンジニア同士がスキルで繋がるマッチングサービス</h1>
+  <h1>DevConnect - エンジニア同士の横のつながりを作るマッチングアプリ</h1>
 
   <div class="hero-description">
-    <p>💻 <strong>技術スキルを交換し、エンジニア同士の横のつながりを作ろう</strong></p>
-    <p>フロントエンド・バックエンド・インフラ・データサイエンスなど、<br>
-      異なる技術領域のエンジニアが知識とスキルを共有できるプラットフォームです</p>
+    <p>🤝 <strong>同じ技術に興味を持つエンジニア仲間と出会おう</strong></p>
+    <p>技術的な話ができる仲間、一緒に勉強会に参加する仲間、<br>
+      新しいプロジェクトを始める仲間を見つけられるプラットフォームです</p>
     <div class="tech-highlights">
-      <span class="tech-tag">React ⚛️</span>
-      <span class="tech-tag">Python 🐍</span>
-      <span class="tech-tag">Docker 🐳</span>
-      <span class="tech-tag">AWS ☁️</span>
-      <span class="tech-tag">Vue.js 💚</span>
-      <span class="tech-tag">Go 🔥</span>
+      <span class="connect-tag">👨‍💻 エンジニア仲間</span>
+      <span class="connect-tag">💬 技術談話</span>
+      <span class="connect-tag">📚 一緒に学習</span>
+      <span class="connect-tag">🚀 プロジェクト仲間</span>
+      <span class="connect-tag">☕ カフェ会</span>
+      <span class="connect-tag">🎯 勉強会仲間</span>
     </div>
   </div>
-
+<% end %>
 
 <!-- ナビゲーション -->
 <% unless user_signed_in? %>
@@ -39,7 +39,7 @@
       <div class="user-dropdown">
         <button class="user-menu-button" type="button">
           <span class="user-avatar">👤</span>
-          <span class="user-name"><%= current_user.name || "ユーザー" %></span>
+          <span class="user-name"><%= current_user.name || "エンジニア" %></span>
           <span class="dropdown-arrow">▼</span>
         </button>
         
@@ -48,7 +48,7 @@
           <%= link_to "マイプロフィール", user_path(current_user), class: "dropdown-item" %>
           <%= link_to "マッチング一覧", matches_path, class: "dropdown-item" %>
           <%= link_to "チャット", chat_rooms_path, class: "dropdown-item" %>
-          <%= link_to "取引履歴", deals_path, class: "dropdown-item" %>
+          <%= link_to "つながり履歴", deals_path, class: "dropdown-item" %>
           <div class="dropdown-divider"></div>
           <%= button_to "ログアウト", destroy_user_session_path, 
                         method: :delete, 
@@ -62,7 +62,7 @@
 
 <!-- ユーザー一覧 -->
 <section class="users-list">
-  <h2>👨‍💻 エンジニア一覧 - スキルでつながろう</h2>
+  <h2>👨‍💻 エンジニア仲間を見つけよう</h2>
   
   <!-- 検索・フィルターフォーム -->
   <div class="search-section">
@@ -72,7 +72,7 @@
       <div class="search-row">
         <div class="search-field">
           <%= f.text_field :search, 
-                          placeholder: "名前、技術スキル、専門分野から検索（例：React, Python, AWS）...", 
+                          placeholder: "名前、技術、専門分野から検索（一緒に学習したい技術など）...", 
                           value: params[:search],
                           class: "search-input",
                           data: { search_target: "input", action: "keydown->search#submitOnEnter" } %>
@@ -80,7 +80,7 @@
         
         <div class="filter-field">
           <%= f.select :skill_filter, 
-                      options_for_select([['すべてのスキル', '']] + 
+                      options_for_select([['すべての技術', '']] + 
                       @available_skills.map { |skill| [skill, skill] }, 
                       params[:skill_filter]),
                       {}, 
@@ -160,18 +160,18 @@
                   </span>
                 <% when :sent_pending %>
                   <span class="match-status pending">
-                    いいね！👍送信済み
+                    つながり申請送信済み
                   </span>
                   <%= button_to "取り消す", destroy_match_path(user), 
                               method: :delete, 
                               class: "btn btn-outline-secondary btn-sm",
-                              data: { confirm: "いいねを取り消しますか？" } %>
+                              data: { confirm: "つながり申請を取り消しますか？" } %>
                 <% when :received_pending %>
                   <span class="match-status received">
-                    いいね！👍が届いています
+                    つながり申請が届いています🤝
                   </span>
                 <% else %>
-                  <%= button_to "👍 いいね", create_match_path(user), 
+                  <%= button_to "🤝 つながる", create_match_path(user), 
                               method: :post, 
                               class: "btn btn-primary btn-sm match-btn" %>
                 <% end %>
@@ -230,7 +230,7 @@
   margin-top: 25px;
 }
 
-.tech-tag {
+.connect-tag {
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
