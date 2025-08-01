@@ -94,6 +94,11 @@ class MatchesController < ApplicationController
         growth_opportunities: compatibility[:growth_opportunities]
       }
     }
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: 'ユーザーが見つかりません' }, status: :not_found
+  rescue => e
+    Rails.logger.error "Compatibility check error: #{e.message}"
+    render json: { error: 'エラーが発生しました' }, status: :internal_server_error
   end
   
   private

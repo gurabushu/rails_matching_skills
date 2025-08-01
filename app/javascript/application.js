@@ -19,12 +19,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadCompatibilityScore(userId, scoreElement) {
   try {
-    const response = await fetch(`/matches/${userId}/compatibility_check`, {
+    const response = await fetch(`/matches/compatibility_check`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
-      }
+      },
+      body: JSON.stringify({
+        user_id: userId
+      })
     });
     
     if (response.ok) {
