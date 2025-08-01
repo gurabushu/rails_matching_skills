@@ -80,6 +80,7 @@ https://rails-match-apply-new-ac372e443c7c.herokuapp.com/
 フロントエンド
 
 ・HTML/CSS/Javascript/json
+・レスポンシブ
 
 バックエンド
 
