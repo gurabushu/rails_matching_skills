@@ -1,5 +1,4 @@
 class UsersController < ApplicationController
-  include MatchStatsHelper
   before_action :authenticate_user!, except: [:index, :show, :guest_login]
   
   def index
