@@ -130,7 +130,7 @@
   <% if @users.any? %>
     <div class="users-grid">
       <% @users.each do |user| %>
-        <div class="user-card">
+        <div class="user-card" data-user-id="<%= user.id %>">
           <div class="user-card-header">
             <div class="user-avatar-small">
               <img src="<%= user.avatar_url(:small) %>" alt="<%= user.name %>のアバター" class="avatar-small">
@@ -156,6 +156,19 @@
           
           <% if user.hobbies.present? %>
             <p class="hobbies"><strong>趣味:</strong> <%= truncate(user.hobbies, length: 80) %></p>
+          <% end %>
+          
+          <!-- AI相性診断 -->
+          <% if user_signed_in? && user != current_user %>
+            <div class="compatibility-score compatibility-unknown">
+              <div class="compatibility-header">
+                <i class="ai-icon">🤖</i>
+                <span class="compatibility-label">AI相性診断</span>
+              </div>
+              <div class="compatibility-details">
+                <span class="score-loading">分析中...</span>
+              </div>
+            </div>
           <% end %>
           
           <p class="created-at">登録日: <%= user.created_at.strftime("%Y年%m月%d日") %></p>

@@ -840,3 +840,99 @@ h2 {
 .match-user-info p {
   margin: 0;
 }
+
+/* AI相性診断スタイル */
+.compatibility-score {
+  margin: 12px 0;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #e1e5e9;
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+}
+
+.compatibility-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.ai-icon {
+  font-size: 16px;
+  margin-right: 6px;
+}
+
+.compatibility-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.compatibility-details {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.score-percentage {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.score-text {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.score-loading {
+  font-size: 12px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* 相性レベル別の色分け */
+.compatibility-excellent {
+  background: linear-gradient(135deg, #d4edda, #c3e6cb);
+  border-color: #28a745;
+}
+
+.compatibility-excellent .score-percentage {
+  color: #155724;
+}
+
+.compatibility-good {
+  background: linear-gradient(135deg, #cce5ff, #b3d9ff);
+  border-color: #007bff;
+}
+
+.compatibility-good .score-percentage {
+  color: #004085;
+}
+
+.compatibility-fair {
+  background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+  border-color: #ffc107;
+}
+
+.compatibility-fair .score-percentage {
+  color: #856404;
+}
+
+.compatibility-low {
+  background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+  border-color: #dc3545;
+}
+
+.compatibility-low .score-percentage {
+  color: #721c24;
+}
+
+.compatibility-unknown {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-color: #ced4da;
+}
+
+.compatibility-unknown .score-loading {
+  color: #6c757d;
+}
