@@ -107,26 +107,8 @@ class UsersController < ApplicationController
   end
   
   def ensure_fresh_stats
-    json_path = Rails.root.join('public', 'match_stats.json')
-    
-    if File.exist?(json_path)
-      file_data = JSON.parse(File.read(json_path))
-      last_generated = Time.parse(file_data['generated_at']) rescue 2.hours.ago
-      
-      # 1時間以上古い場合は再生成
-      if last_generated < 1.hour.ago
-        generate_stats_async
-      end
-    else
-      generate_stats_async
-    end
-  end
-  
-  def generate_stats_async
-    # バックグラウンドで統計データを生成
-    Thread.new do
-      generate_match_statistics
-    end
+    # 統計データの処理は一旦削除（エラー回避）
+    Rails.logger.info "Stats generation skipped"
   end
 
 end
